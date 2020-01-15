@@ -9,7 +9,7 @@ bot = Discordrb::Commands::CommandBot.new token: ENV['token'], prefix: "a!", adv
 
 bot.ready do |event|
     while(true)
-        if(DateTime.now().hour() == 12 && DateTime.now.minute() == 26)
+        if(DateTime.now().hour() == 00 && DateTime.now.minute() == 00)
             if !is_send
                 event.bot.servers.each() { |server|
                     server[1].channels.each() { |channel|
