@@ -5,7 +5,7 @@ require 'open-uri'
 
 is_send = false
 
-bot = Discordrb::Commands::CommandBot.new token: 'NjY1MzI1Mzc0Mzg4ODMwMjEw.Xhj-kw.MUGWcgkL00gZ-mRzts6dwuTyr7A', prefix: "a!", advanced_functionality: true, compress_mode: :large
+bot = Discordrb::Commands::CommandBot.new token: ENV['token'], prefix: "a!", advanced_functionality: true, compress_mode: :large
 
 bot.ready do |event|
     while(true)
