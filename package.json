@@ -4,12 +4,14 @@
   "description": "discord bot for Wakfu almanax",
   "main": "wakmanax.js",
   "dependencies": {
-    "http": "^0.0.0",
     "discord.js": "^11.5.1",
+    "fs": "0.0.1-security",
+    "http": "^0.0.0",
     "mariadb": "^2.1.5",
-    "mysql": "^2.18.0",
     "mongodb": "^3.5.2",
-    "node-cron": "^2.0.3"
+    "mysql": "^2.18.0",
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {},
   "scripts": {

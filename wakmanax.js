@@ -1,13 +1,13 @@
 const Discord = require('discord.js');
 const cron = require('node-cron');
-const http = require('http')
+const fetch = require('node-fetch')
 
 const client = new Discord.Client();
 const MongoClient = require('mongodb').MongoClient;
 const prefix = "a!"
 
 let collection = null;
-const uri = "mongodb+srv://" + process.env['db_user'] + ":" + process.env['db_pass'] + "@" + process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 mongo_client.connect(err => {
     if(err) throw err;
@@ -15,23 +15,26 @@ mongo_client.connect(err => {
 });
 
 client.on('ready', () => {
-    cron.schedule('0 22 * * *', () =>{
+    cron.schedule('0 0 * * *', () =>{
         let data;
-        http.get('http://almanax.kasswat.com', (resp) => {
-            resp.on('data', (chunk) => {
-                data = JSON.parse(chunk);
-            })
+        fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+            collection.find().forEach(cursor => {
+                let embed;
+                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    .setDescription(json['description'][0])
+                    .addField('bonus', json['bonus'][0])
+                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                } else {
+                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    .setDescription(json['description'][1])
+                    .addField('bonus', json['bonus'][1])
+                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                }
+                client.channels.get(cursor.channel).send(embed)
+            });
+            console.log('I just send almanax for every channels.')
         })
-        collection.find().forEach(cursor => {
-            let embed;
-            if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                embed = new RichEmbed().setTitle(data['day'] + " " + data['month'] + " " + data['year']).setDescription(data['description'][0]).addField('bonus', data['bonus'][0])
-            } else {
-                embed = new RichEmbed().setTitle(data['day'] + " " + data['month'] + " " + data['year']).setDescription(data['description'][1]).addField('bonus', data['bonus'][1])
-            }
-            client.channels.get(cursor.channel).send(embed)
-        });
-        console.log('send almanax')
     }, {timezone: 'Europe/Paris'})
 });
 
@@ -46,11 +49,19 @@ client.on('message', message => {
         }
         collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
             if(result && result.guild == message.guild.name) {
-                collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: args[1], language: args[0]}})
+                let canal;
+                message.mentions.channels.forEach(channel => {
+                    canal = channel.id
+                })
+                collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
                 console.log('A guild has been updated')
                 message.channel.send('Your channel has been modified for ' + args[1])
             } else {
-                let insertSQL = {guild: message.guild.name, language: args[0], channel: args[1]}
+                let canal;
+                message.mentions.channels.forEach(channel => {
+                    canal = channel.id
+                })
+                let insertSQL = {guild: message.guild.name, language: args[0], canal: channel}
                 collection.insertOne(insertSQL)
                 console.log("A guild has been inserted on DB.");
                 message.channel.send('Your guild has been configured for ' + args[1])
