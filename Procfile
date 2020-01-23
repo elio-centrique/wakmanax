@@ -1,1 +1,1 @@
-worker: bundle exec ruby Wakmanax.rb
+worker: node wakmanax.js
