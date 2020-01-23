@@ -7,7 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 const prefix = "a!"
 
 let collection = null;
-const uri = "mongodb+srv://" + ENV['db_user'] + ":" + ENV['db_pass'] + "@" + ENV['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + process.env['db_user'] + ":" + process.env['db_pass'] + "@" + process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 mongo_client.connect(err => {
     if(err) throw err;
@@ -59,4 +59,4 @@ client.on('message', message => {
     }
 });
 
-client.login(ENV['token']);
+client.login(process.env['token']);
