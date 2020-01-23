@@ -15,7 +15,7 @@ mongo_client.connect(err => {
 });
 
 client.on('ready', () => {
-    cron.schedule('0 0 * * *', () =>{
+    cron.schedule('0 22 * * *', () =>{
         let data;
         http.get('http://almanax.kasswat.com', (resp) => {
             resp.on('data', (chunk) => {
