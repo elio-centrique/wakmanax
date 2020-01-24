@@ -15,27 +15,32 @@ mongo_client.connect(err => {
 });
 
 client.on('ready', () => {
-    cron.schedule('5 0 * * *', () =>{
-        let data;
-        fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-            collection.find().forEach(cursor => {
-                let embed;
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][0])
-                    .addField('bonus', json['bonus'][0])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                } else {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][1])
-                    .addField('bonus', json['bonus'][1])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                }
-                client.channels.get(cursor.channel).send(embed)
-            });
-            console.log('I just send almanax for every channels.')
-        })
-    }, {timezone: 'Europe/Paris'})
+    try {
+        cron.schedule('5 0 * * *', () =>{
+            let data;
+            fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+                collection.find().forEach(cursor => {
+                    let embed;
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][0])
+                        .addField('bonus', json['bonus'][0])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    } else {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][1])
+                        .addField('bonus', json['bonus'][1])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    }
+                    client.channels.get(cursor.channel).send(embed)
+                });
+                console.log('I just send almanax for every channels.')
+            })
+        }, {timezone: 'Europe/Paris'})
+    } catch(e) {
+        console.log("can't schedule the almanax messages, aborting. \n" + e)
+    }
+    
 });
 
 client.on('message', message => {
@@ -47,26 +52,53 @@ client.on('message', message => {
         if (args.length < 2) {
             return message.channel.send(`You didn't provide enough arguments, ${message.author}!`);
         }
-        collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
-            if(result && result.guild == message.guild.name) {
-                let canal;
-                message.mentions.channels.forEach(channel => {
-                    canal = channel.id
-                })
-                collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
-                console.log('A guild has been updated')
-                message.channel.send('Your channel has been modified for ' + args[1])
-            } else {
-                let canal;
-                message.mentions.channels.forEach(channel => {
-                    canal = channel.id
-                })
-                let insertSQL = {guild: message.guild.name, language: args[0], canal: channel}
-                collection.insertOne(insertSQL)
-                console.log("A guild has been inserted on DB.");
-                message.channel.send('Your guild has been configured for ' + args[1])
-            }
-        })
+        try {
+            collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
+                if(result && result.guild == message.guild.name) {
+                    let canal;
+                    message.mentions.channels.forEach(channel => {
+                        canal = channel.id
+                    })
+                    collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
+                    console.log('A guild has been updated')
+                    message.channel.send('Your channel has been modified for ' + args[1])
+                } else {
+                    let canal;
+                    message.mentions.channels.forEach(channel => {
+                        canal = channel.id
+                    })
+                    let insertSQL = {guild: message.guild.name, language: args[0], canal: channel}
+                    collection.insertOne(insertSQL)
+                    console.log("A guild has been inserted on DB.");
+                    message.channel.send('Your guild has been configured for ' + args[1])
+                }
+            })
+        } catch(e) {
+            console.log("can't add this server on database. Aborting. \n" + e);
+            message.channel.send('An error occured, your server was not added to the database. Please retry.')
+        }
+    }
+});
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    
+    if (command === 'reset') {
+        if (args.length > 0) {
+            return message.channel.send(`This command don't need arguments!`);
+        }
+         try {
+            collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
+                if(result) {
+                    return message.channel.send('Your Almanax channel has been cleared, I will no more post on your server.')
+                }
+            })
+         } catch(e) {
+             console.log("can't remove the server from the database. Aborting. \n" + e);
+             return message.channel.send('Your guild couldn\'t be deleted from the database. Please retry.')
+         }
     }
 });
 
