@@ -67,7 +67,7 @@ client.on('message', message => {
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
                     })
-                    let insertSQL = {guild: message.guild.name, language: args[0], canal: channel}
+                    let insertSQL = {guild: message.guild.name, language: args[0], canal: canal}
                     collection.insertOne(insertSQL)
                     console.log("A guild has been inserted on DB.");
                     message.channel.send('Your guild has been configured for ' + args[1])
