@@ -7,7 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 const prefix = "a!"
 
 let collection = null;
-const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + 'elio-centrique' + ":" +  'rq5qeg88k' + "@" +  'wakmanax' + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 mongo_client.connect(err => {
     if(err) throw err;
@@ -67,7 +67,7 @@ client.on('message', message => {
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
                     })
-                    let insertSQL = {guild: message.guild.name, language: args[0], canal: canal}
+                    let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
                     collection.insertOne(insertSQL)
                     console.log("A guild has been inserted on DB.");
                     message.channel.send('Your guild has been configured for ' + args[1])
@@ -102,4 +102,4 @@ client.on('message', message => {
     }
 });
 
-client.login(process.env['token']);
+client.login('NjY1MzI1Mzc0Mzg4ODMwMjEw.Xh76Rw.WeoEDq4ETIu15yfKdP-zLYx_4Mk');
