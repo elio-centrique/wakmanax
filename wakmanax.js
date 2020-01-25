@@ -7,7 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 const prefix = "a!"
 
 let collection = null;
-const uri = "mongodb+srv://" + 'elio-centrique' + ":" +  'rq5qeg88k' + "@" +  'wakmanax' + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 mongo_client.connect(err => {
     if(err) throw err;
@@ -102,4 +102,4 @@ client.on('message', message => {
     }
 });
 
-client.login('NjY1MzI1Mzc0Mzg4ODMwMjEw.Xh76Rw.WeoEDq4ETIu15yfKdP-zLYx_4Mk');
+client.login(process.env['token']);
