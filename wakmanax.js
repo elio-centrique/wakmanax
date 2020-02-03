@@ -32,7 +32,9 @@ client.on('ready', () => {
                         .addField('bonus', json['bonus'][1])
                         .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     }
-                    client.channels.get(cursor.channel).send(embed)
+                    if(client.channels.get(cursor.channel)) {
+                        client.channels.get(cursor.channel).send(embed)
+                    }
                 });
                 console.log('I just send almanax for every channels.')
             })
