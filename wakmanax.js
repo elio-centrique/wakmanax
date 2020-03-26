@@ -14,28 +14,33 @@ mongo_client.connect(err => {
     collection = mongo_client.db("wakmanax").collection("guilds");
 });
 
+function send_message() {
+    fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+        collection.find().forEach(cursor => {
+            let embed;
+            if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                .setDescription(json['description'][0])
+                .addField('bonus', json['bonus'][0])
+                .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+            } else {
+                embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                .setDescription(json['description'][1])
+                .addField('bonus', json['bonus'][1])
+                .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+            }
+            if(client.channels.get(cursor.channel)) {
+                client.channels.get(cursor.channel).send(embed)
+            }
+        });
+        console.log('I just send almanax for every channels.')
+    })
+}
+
 client.on('ready', () => {
     try {
-        cron.schedule('5 0 * * *', () =>{
-            let data;
-            fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-                collection.find().forEach(cursor => {
-                    let embed;
-                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                        .setDescription(json['description'][0])
-                        .addField('bonus', json['bonus'][0])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                    } else {
-                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                        .setDescription(json['description'][1])
-                        .addField('bonus', json['bonus'][1])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                    }
-                    client.channels.get(cursor.channel).send(embed)
-                });
-                console.log('I just send almanax for every channels.')
-            })
+        cron.schedule('45 7 * * *', () =>{
+            send_message();
         }, {timezone: 'Europe/Paris'})
     } catch(e) {
         console.log("can't schedule the almanax messages, aborting. \n" + e)
@@ -101,5 +106,49 @@ client.on('message', message => {
          }
     }
 });
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    
+    if (command === 'resend') {
+        if (args.length > 0) {
+            return message.channel.send(`This command don't need arguments!`);
+        }
+        send_message();
+    }
+});
+
+client.on('message', message => {
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    
+    if (command === 'retry') {
+        if (args.length > 0) {
+            return message.channel.send(`This command don't need arguments!`);
+        }
+        fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+            collection.findOne({guild: {$eq: message.guild.name}}, (err, cursor) => {
+                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    .setDescription(json['description'][0])
+                    .addField('bonus', json['bonus'][0])
+                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                } else {
+                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    .setDescription(json['description'][1])
+                    .addField('bonus', json['bonus'][1])
+                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                }
+                if(client.channels.get(cursor.channel)) {
+                    client.channels.get(cursor.channel).send(embed)
+                }
+            })
+        });
+    }
+})
 
 client.login(process.env['token']);
