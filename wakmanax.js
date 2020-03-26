@@ -108,7 +108,7 @@ client.on('message', message => {
 });
 
 client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
     
@@ -148,6 +148,35 @@ client.on('message', message => {
                 }
             })
         });
+    }
+})
+
+client.on('message', message => {
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    
+    if (command === 'help') {
+        if (args.length > 0 && args.length < 2) {
+            if(args[0] == 'retry') {
+                return message.channel.send('a!retry: tries to fire the almanax to your registered channel.')
+            }
+            if(args[0] == 'reset') {
+                return message.channel.send('a!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.')
+            }
+            if(args[0] == 'configure') {
+                return message.channel.send('a!configure: configure the bot for your server. You can use this command to change the output channel. Usage: a!configure <language> <#channel>.')
+            }
+            if(args[0] == 'retry') {
+                return message.channel.send('a!retry: tries to fire the almanax to your registered channel.')
+            }
+        }
+        else if(args.length == 0) {
+            return message.channel.send('a!retry: tries to fire the almanax to your registered channel.\na!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.\na!configure: configure the bot for your server. You can use this command to change the output channel. Usage: a!configure <language> <#channel>.\na!retry: tries to fire the almanax to your registered channel.')
+        } else {
+            return message.channel.send(`Too much argument for this command!`);
+        }
     }
 })
 
