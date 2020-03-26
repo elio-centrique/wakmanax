@@ -173,7 +173,7 @@ client.on('message', message => {
             }
         }
         else if(args.length == 0) {
-            return message.channel.send('a!retry: tries to fire the almanax to your registered channel.\na!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.\na!configure: configure the bot for your server. You can use this command to change the output channel. Usage: a!configure <language> <#channel>.\na!retry: tries to fire the almanax to your registered channel.')
+            return message.channel.send('Here\'s the list of the commands:\na!retry: tries to fire the almanax to your registered channel.\na!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.\na!configure: configure the bot for your server. You can use this command to change the output channel. Usage: a!configure <language> <#channel>.\na!retry: tries to fire the almanax to your registered channel.')
         } else {
             return message.channel.send(`Too much argument for this command!`);
         }
