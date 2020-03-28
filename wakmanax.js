@@ -39,7 +39,7 @@ function send_message() {
 
 client.on('ready', () => {
     try {
-        cron.schedule('45 7 * * *', () =>{
+        cron.schedule('5 0 * * *', () =>{
             send_message();
         }, {timezone: 'Europe/Paris'})
     } catch(e) {
