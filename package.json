@@ -5,6 +5,7 @@
   "main": "wakmanax.js",
   "dependencies": {
     "discord.js": "^11.5.1",
+    "feedparser": "^2.2.9",
     "fs": "0.0.1-security",
     "http": "^0.0.0",
     "mariadb": "^2.1.5",
