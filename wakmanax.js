@@ -9,6 +9,8 @@ const prefix = "a!"
 let collection = null;
 const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
+let almanax_sent = false;
+
 mongo_client.connect(err => {
     if(err) throw err;
     collection = mongo_client.db("wakmanax").collection("guilds");
@@ -16,36 +18,42 @@ mongo_client.connect(err => {
 
 function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-        collection.find().forEach(cursor => {
-            try {
-                let embed;
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][0])
-                    .addField('bonus', json['bonus'][0])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                } else {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][1])
-                    .addField('bonus', json['bonus'][1])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+        if(!almanax_sent) {
+            collection.find().forEach(cursor => {
+                try {
+                    let embed;
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][0])
+                        .addField('bonus', json['bonus'][0])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    } else {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][1])
+                        .addField('bonus', json['bonus'][1])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    }
+                    if(client.channels.get(cursor.channel)) {
+                        client.channels.get(cursor.channel).send(embed)
+                    }
+                } catch(error) {
+                    console.log(cursor.guild + ": Please update the Bot Permissions.");
                 }
-                if(client.channels.get(cursor.channel)) {
-                    client.channels.get(cursor.channel).send(embed)
-                }
-            } catch(error) {
-                console.log(cursor.guild + ": Please update the Bot Permissions.");
-            }
-            
-        });
-        console.log('I just send almanax for every channels.')
+                
+            });
+            almanax_sent = true;
+            console.log('I just send almanax for every channels.')
+        }
     })
 }
 
 client.on('ready', () => {
     try {
-        cron.schedule('5 23 * * *', () =>{
+        cron.schedule('0 5 23 * * *', () =>{
             send_message();
+        }, {timezone: 'Europe/Paris'})
+        cron.schedule('0 10 23 * * *', () =>{
+            almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
     } catch(e) {
         console.log("can't schedule the almanax messages, aborting. \n" + e)
@@ -176,9 +184,6 @@ client.on('message', message => {
             }
             if(args[0] == 'configure') {
                 return message.channel.send('a!configure: configure the bot for your server. You can use this command to change the output channel. Usage: a!configure <language> <#channel>.')
-            }
-            if(args[0] == 'retry') {
-                return message.channel.send('a!retry: tries to fire the almanax to your registered channel.')
             }
         }
         else if(args.length == 0) {
