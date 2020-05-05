@@ -25,45 +25,45 @@ i18next.init({
     resources: {
         en: {
             translation: {
-                "update_permissions": ": Please update the Bot Permissions.",
-                "sent_everyone": 'I just send almanax for every channels.',
-                "fail_sent": "can't schedule the almanax messages, aborting. \n",
-                "fail_set_language": "can't get language from database.\n",
-                "not_enough_arguments": `You didn't provide enough arguments, `,
-                "too_much_arguments": `You provide too much arguments, `,
-                "guild_updated": ' has been updated.',
-                "updated_guild": 'Your channel has been modified for ',
-                "guild_configurated": " has been inserted on DB.",
-                "configurated_guild": 'Your guild has been configured for ',
-                "configuration_error": 'An error occured, your server was not added to the database. Please retry.',
-                "no_argument": `This command don't need arguments!`,
-                'guild_cleared': 'Your Almanax channel has been cleared, I will no more post on your server.',
-                'error_clear_guild': 'Your guild couldn\'t be deleted from the database. Please retry.',
-                'retry_help': 'a!retry: tries to fire the almanax to your registered channel.',
-                'reset_help': 'a!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.',
-                'configure_help': 'a!configure: configure the bot for your server. You can use this command to change the output channel or the language. Usage: a!configure en #channel.',
+                "updatepermissions": ": Please update the Bot Permissions.",
+                "senteveryone": 'I just send almanax for every channels.',
+                "failsent": "can't schedule the almanax messages, aborting. \n",
+                "failsetlanguage": "can't get language from database.\n",
+                "notenougharguments": `You didn't provide enough arguments, `,
+                "toomucharguments": `You provide too much arguments, `,
+                "guildupdated": ' has been updated.',
+                "updatedguild": 'Your channel has been modified for ',
+                "guildconfigurated": " has been inserted on DB.",
+                "configuratedguild": 'Your guild has been configured for ',
+                "configurationerror": 'An error occured, your server was not added to the database. Please retry.',
+                "noargument": `This command don't need arguments!`,
+                'guildcleared': 'Your Almanax channel has been cleared, I will no more post on your server.',
+                'errorclear_guild': 'Your guild couldn\'t be deleted from the database. Please retry.',
+                'retryhelp': 'a!retry: tries to fire the almanax to your registered channel.',
+                'resethelp': 'a!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.',
+                'configurehelp': 'a!configure: configure the bot for your server. You can use this command to change the output channel or the language. Usage: a!configure en #channel.',
                 'help': 'Here\'s the list of the commands:'
             }
         },
         fr: {
             translation: {
-                "update_permissions": ": Please update the Bot Permissions.",
-                "sent_everyone": 'I just send almanax for every channels.',
-                "fail_sent": "can't schedule the almanax messages, aborting. \n",
-                "fail_set_language": "can't get language from database.\n",
-                "not_enough_arguments": `Vous n'avez pas mis assez d'arguments, `,
-                "too_much_arguments": `Vous avez mis trop d'arguments, `,
-                "guild_updated": ' has been updated.',
-                "updated_guild": 'Votre canal a bien été modifié pour celui-ci: ',
-                "guild_configurated": " has been inserted on DB.",
-                "configurated_guild": 'Votre serveur a été configuré pour le canal ',
-                "configuration_error": 'Une erreur est survenue, votre serveur n\'a pas pu être ajouté. Merci de réessayer.',
-                "no_argument": `Cette command ne nécessite aucun argument!`,
-                'guild_cleared': 'Votre configuration a été supprimée. Je ne posterai plus sur ce serveur.',
-                'error_clear_guild': 'Votre serveur n\'a pas pu être supprimé de la base de données. Merci de réessayer.',
-                'retry_help': 'a!retry: tente d\'envoyer l\'alamanax sur le canal configuré.',
-                'reset_help': 'a!reset: Supprime la configuration actuelle duserveur. Utile si vous souhaitez retirer le bot de votre serveur.',
-                'configure_help': 'a!configure: configure le bot pour votre serveur. Vous pouvez utiliser cette commande pour changer la langue ou le canal. Utilisation: a!configure fr #canal.',
+                "updatepermissions": ": Please update the Bot Permissions.",
+                "senteveryone": 'I just send almanax for every channels.',
+                "failsent": "can't schedule the almanax messages, aborting. \n",
+                "failsetlanguage": "can't get language from database.\n",
+                "notenougharguments": `Vous n'avez pas mis assez d'arguments, `,
+                "toomucharguments": `Vous avez mis trop d'arguments, `,
+                "guildupdated": ' has been updated.',
+                "updatedguild": 'Votre canal a bien été modifié pour celui-ci: ',
+                "guildconfigurated": " has been inserted on DB.",
+                "configuratedguild": 'Votre serveur a été configuré pour le canal ',
+                "configurationerror": 'Une erreur est survenue, votre serveur n\'a pas pu être ajouté. Merci de réessayer.',
+                "noargument": `Cette command ne nécessite aucun argument!`,
+                'guildcleared': 'Votre configuration a été supprimée. Je ne posterai plus sur ce serveur.',
+                'errorclearguild': 'Votre serveur n\'a pas pu être supprimé de la base de données. Merci de réessayer.',
+                'retryhelp': 'a!retry: tente d\'envoyer l\'alamanax sur le canal configuré.',
+                'resethelp': 'a!reset: Supprime la configuration actuelle duserveur. Utile si vous souhaitez retirer le bot de votre serveur.',
+                'configurehelp': 'a!configure: configure le bot pour votre serveur. Vous pouvez utiliser cette commande pour changer la langue ou le canal. Utilisation: a!configure fr #canal.',
                 'help': 'Voici la liste des commandes:'
             }
         }
@@ -90,17 +90,17 @@ function send_message() {
                     try {
                         client.channels.get(cursor.channel).send(embed)
                     } catch(error) {
-                        console.log(cursor.guild + i18next.t("update_permissions"));
+                        console.log(cursor.guild + i18next.t("updatepermissions"));
                     }
                 }
             });
-            console.log(i18next.t("sent_everyone"))
+            console.log(i18next.t("senteveryone"))
         }
     })
 }
 
-function setLanguage(message, language = null) {
-    if (language) {
+function setLanguage(message, language = undefined) {
+    if (language != undefined) {
         i18next.changeLanguage(language);
         return;
     }
@@ -113,7 +113,7 @@ function setLanguage(message, language = null) {
             }
         })
     } catch(e) {
-        console.log(i18next.t("fail_set_language") + e);
+        console.log(i18next.t("failsetlanguage") + e);
     }
 }
 
@@ -127,7 +127,7 @@ client.on('ready', () => {
             almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
     } catch(e) {
-        console.log(i18next.t("fail_sent") + e)
+        console.log(i18next.t("failsent") + e)
     }
     
 });
@@ -140,7 +140,7 @@ client.on('message', message => {
     
     if (command === 'configure') {
         if (args.length < 2) {
-            return message.channel.send(i18next.t('not_enough_arguments') + message.author);
+            return message.channel.send(i18next.t('notenougharguments') + message.author);
         }
         try {
             collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
@@ -150,8 +150,8 @@ client.on('message', message => {
                         canal = channel.id
                     })
                     collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
-                    console.log(message.guild.name + i18next.t('guild_updated'))
-                    message.channel.send(i18next.t('updated_guild') + args[1])
+                    console.log(message.guild.name + i18next.t('guildupdated'))
+                    message.channel.send(i18next.t('updatedguild') + args[1])
                 } else {
                     let canal;
                     message.mentions.channels.forEach(channel => {
@@ -159,13 +159,13 @@ client.on('message', message => {
                     })
                     let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
                     collection.insertOne(insertSQL)
-                    console.log(message.guild.name + i18next.t('guild_configurated'));
-                    message.channel.send(i18next.t('configurated_guild') + args[1])
+                    console.log(message.guild.name + i18next.t('guildconfigurated'));
+                    message.channel.send(i18next.t('configuratedguild') + args[1])
                 }
             })
         } catch(e) {
             console.log("can't add this server on database. Aborting. \n" + e);
-            message.channel.send(i18next.t("configuration_error"))
+            message.channel.send(i18next.t("configurationerror"))
         }
     }
 });
@@ -178,18 +178,18 @@ client.on('message', message => {
     
     if (command === 'reset') {
         if (args.length > 0) {
-            return message.channel.send(i18next.t('no_argument'));
+            return message.channel.send(i18next.t('noargument'));
         }
          try {
             collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
                 if(result) {
                     console.log(message.guild.name + ' has been removed from the Database')
-                    return message.channel.send(i18next.t('guild_cleared'))
+                    return message.channel.send(i18next.t('guildcleared'))
                 }
             })
          } catch(e) {
              console.log("can't remove the server from the database. Aborting. \n" + e);
-             return message.channel.send(i18next.t('error_clear_guild'))
+             return message.channel.send(i18next.t('errorclearguild'))
          }
     }
 });
@@ -202,7 +202,7 @@ client.on('message', message => {
     
     if (command === 'resend') {
         if (args.length > 0) {
-            return message.channel.send(i18next.t('no_argument'));
+            return message.channel.send(i18next.t('noargument'));
         }
         send_message();
     }
@@ -216,7 +216,7 @@ client.on('message', message => {
     
     if (command === 'retry') {
         if (args.length > 0) {
-            return message.channel.send(i18next.t('no_argument'));
+            return message.channel.send(i18next.t('noargument'));
         }
         send_message()
     }
@@ -231,13 +231,13 @@ client.on('message', message => {
     if (command === 'help') {
         if (args.length > 0 && args.length < 2) {
             if(args[0] == 'retry') {
-                return message.channel.send(i18next.t('retry_help'))
+                return message.channel.send(i18next.t('retryhelp'))
             }
             if(args[0] == 'reset') {
-                return message.channel.send(i18next.t('reset_help'))
+                return message.channel.send(i18next.t('resethelp'))
             }
             if(args[0] == 'configure') {
-                return message.channel.send(i18next.t('configure_help'))
+                return message.channel.send(i18next.t('configurehelp'))
             }
         }
         else if(args.length == 0) {
@@ -257,7 +257,7 @@ client.on('message', message => {
     
     if (command === 'update') {
         if (args.length < 0) {
-            return message.channel.send(i18next.t('not_enough_arguments') + message.author);
+            return message.channel.send(i18next.t('notenougharguments') + message.author);
         }
         for (let index = 1; index < args.length; index++) {
             sendmessage += args[index] + " "
