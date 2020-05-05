@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+const i18next = require('i18next');
 
 const Discord = require('discord.js');
 const cron = require('node-cron');
