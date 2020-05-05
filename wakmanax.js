@@ -20,7 +20,7 @@ mongo_client.connect(err => {
 
 i18next.init({
     lng: 'en',
-    whitelist: ['fr-FR', 'en-US'],
+    whitelist: ['fr', 'en'],
     debug: true,
     resources: {
         en: {
