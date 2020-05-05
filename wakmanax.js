@@ -84,8 +84,7 @@ i18next.init({
             }, {timezone: 'Europe/Paris'})
         } catch(e) {
             console.log(i18next.t("failsent") + e)
-        }
-        
+        }       
     });
     
     client.on('message', message => {
@@ -193,8 +192,8 @@ i18next.init({
                             .addField('bonus', json['bonus'][1])
                             .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                         }
-                        if(client.channels.get(cursor.channel)) {
-                            client.channels.get(cursor.channel).send(embed)
+                        if(client.channels.cache.get(cursor.channel)) {
+                            client.channels.cache.get(cursor.channel).send(embed)
                         }
                     } catch(error) {
                         console.log(cursor.guild + ": Please update the Bot Permissions.");
@@ -248,16 +247,16 @@ i18next.init({
             if (args[0] == 'fr') {
                 collection.find().forEach(cursor => {
                     if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                        if(client.channels.get(cursor.channel)) {
-                            client.channels.get(cursor.channel).send(sendmessage)
+                        if(client.channels.cache.get(cursor.channel)) {
+                            client.channels.cache.get(cursor.channel).send(sendmessage)
                         }
                     }
                 });
             } else {
                 collection.find().forEach(cursor => {
                     if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
-                        if(client.channels.get(cursor.channel)) {
-                            client.channels.get(cursor.channel).send(sendmessage)
+                        if(client.channels.cache.get(cursor.channel)) {
+                            client.channels.cache.get(cursor.channel).send(sendmessage)
                         }
                     }
                 });
@@ -285,19 +284,19 @@ function send_message() {
             collection.find().forEach(cursor => {
                 let embed;
                 if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][0])
                     .addField('bonus', json['bonus'][0])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                 } else {
-                    embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][1])
                     .addField('bonus', json['bonus'][1])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                 }
-                if(client.channels.get(cursor.channel)) {
+                if(client.channels.cache.get(cursor.channel)) {
                     try {
-                        client.channels.get(cursor.channel).send(embed)
+                        client.channels.cache.get(cursor.channel).send(embed)
                     } catch(error) {
                         console.log(cursor.guild + i18next.t("updatepermissions"));
                     }
