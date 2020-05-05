@@ -21,7 +21,7 @@ mongo_client.connect(err => {
 i18next.init({
     lng: 'en',
     whitelist: ['fr', 'en'],
-    debug: true,
+    debug: false,
     resources: {
         en: {
             translation: {
@@ -212,7 +212,7 @@ client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage(mesage)
+    setLanguage(message)
     
     if (command === 'retry') {
         if (args.length > 0) {
