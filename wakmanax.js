@@ -68,6 +68,185 @@ i18next.init({
             }
         }
     }
+}).then(function(t) {
+    client.on('ready', () => {
+        try {
+            cron.schedule('0 5 23 * * *', () =>{
+                send_message();
+                almanax_sent = true;
+            }, {timezone: 'Europe/Paris'})
+            cron.schedule('0 10 23 * * *', () =>{
+                almanax_sent = false;
+            }, {timezone: 'Europe/Paris'})
+        } catch(e) {
+            console.log(i18next.t("failsent") + e)
+        }
+        
+    });
+    
+    client.on('message', message => {
+        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message, args[0])
+        
+        if (command === 'configure') {
+            if (args.length < 2) {
+                return message.channel.send(i18next.t('notenougharguments') + message.author);
+            }
+            try {
+                collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
+                    if(result && result.guild == message.guild.name) {
+                        let canal;
+                        message.mentions.channels.forEach(channel => {
+                            canal = channel.id
+                        })
+                        collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
+                        console.log(message.guild.name + i18next.t('guildupdated'))
+                        message.channel.send(i18next.t('updatedguild') + args[1])
+                    } else {
+                        let canal;
+                        message.mentions.channels.forEach(channel => {
+                            canal = channel.id
+                        })
+                        let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
+                        collection.insertOne(insertSQL)
+                        console.log(message.guild.name + i18next.t('guildconfigurated'));
+                        message.channel.send(i18next.t('configuratedguild') + args[1])
+                    }
+                })
+            } catch(e) {
+                console.log("can't add this server on database. Aborting. \n" + e);
+                message.channel.send(i18next.t("configurationerror"))
+            }
+        }
+    });
+    
+    client.on('message', message => {
+        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message);
+        
+        if (command === 'reset') {
+            if (args.length > 0) {
+                return message.channel.send(i18next.t('noargument'));
+            }
+             try {
+                collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
+                    if(result) {
+                        console.log(message.guild.name + ' has been removed from the Database')
+                        return message.channel.send(i18next.t('guildcleared'))
+                    }
+                })
+             } catch(e) {
+                 console.log("can't remove the server from the database. Aborting. \n" + e);
+                 return message.channel.send(i18next.t('errorclearguild'))
+             }
+        }
+    });
+    
+    client.on('message', message => {
+        if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message)
+        
+        if (command === 'resend') {
+            if (args.length > 0) {
+                return message.channel.send(i18next.t('noargument'));
+            }
+            send_message();
+        }
+    });
+    
+    client.on('message', message => {
+        if(!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message)
+        
+        if (command === 'retry') {
+            if (args.length > 0) {
+                return message.channel.send(i18next.t('noargument'));
+            }
+            send_message()
+        }
+    })
+    
+    client.on('message', message => {
+        if(!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message)
+        
+        if (command === 'help') {
+            if (args.length > 0 && args.length < 2) {
+                if(args[0] == 'retry') {
+                    return message.channel.send(i18next.t('retryhelp'))
+                }
+                if(args[0] == 'reset') {
+                    return message.channel.send(i18next.t('resethelp'))
+                }
+                if(args[0] == 'configure') {
+                    return message.channel.send(i18next.t('configurehelp'))
+                }
+            }
+            else if(args.length == 0) {
+                return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
+            } else {
+                return message.channel.send(i18next.t('toomucharguments') + message.author);
+            }
+        }
+    })
+    
+    client.on('message', message => {
+        if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        setLanguage(message)
+        let sendmessage = ""
+        
+        if (command === 'update') {
+            if (args.length < 0) {
+                return message.channel.send(i18next.t('notenougharguments') + message.author);
+            }
+            for (let index = 1; index < args.length; index++) {
+                sendmessage += args[index] + " "
+            }
+    
+            if (args[0] == 'fr') {
+                collection.find().forEach(cursor => {
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        if(client.channels.get(cursor.channel)) {
+                            client.channels.get(cursor.channel).send(sendmessage)
+                        }
+                    }
+                });
+            } else {
+                collection.find().forEach(cursor => {
+                    if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
+                        if(client.channels.get(cursor.channel)) {
+                            client.channels.get(cursor.channel).send(sendmessage)
+                        }
+                    }
+                });
+            }
+        }
+    })
+    
+    /*
+    client.on('message', message => {
+        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+    
+        if(command === 'news') {
+    
+        }
+    })
+    */
+    client.login(process.env['token']);    
 });
 
 function send_message() {
@@ -117,181 +296,3 @@ function setLanguage(message, language = undefined) {
     }
 }
 
-client.on('ready', () => {
-    try {
-        cron.schedule('0 5 23 * * *', () =>{
-            send_message();
-            almanax_sent = true;
-        }, {timezone: 'Europe/Paris'})
-        cron.schedule('0 10 23 * * *', () =>{
-            almanax_sent = false;
-        }, {timezone: 'Europe/Paris'})
-    } catch(e) {
-        console.log(i18next.t("failsent") + e)
-    }
-    
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message, args[0])
-    
-    if (command === 'configure') {
-        if (args.length < 2) {
-            return message.channel.send(i18next.t('notenougharguments') + message.author);
-        }
-        try {
-            collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
-                if(result && result.guild == message.guild.name) {
-                    let canal;
-                    message.mentions.channels.forEach(channel => {
-                        canal = channel.id
-                    })
-                    collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
-                    console.log(message.guild.name + i18next.t('guildupdated'))
-                    message.channel.send(i18next.t('updatedguild') + args[1])
-                } else {
-                    let canal;
-                    message.mentions.channels.forEach(channel => {
-                        canal = channel.id
-                    })
-                    let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
-                    collection.insertOne(insertSQL)
-                    console.log(message.guild.name + i18next.t('guildconfigurated'));
-                    message.channel.send(i18next.t('configuratedguild') + args[1])
-                }
-            })
-        } catch(e) {
-            console.log("can't add this server on database. Aborting. \n" + e);
-            message.channel.send(i18next.t("configurationerror"))
-        }
-    }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
-    
-    if (command === 'reset') {
-        if (args.length > 0) {
-            return message.channel.send(i18next.t('noargument'));
-        }
-         try {
-            collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
-                if(result) {
-                    console.log(message.guild.name + ' has been removed from the Database')
-                    return message.channel.send(i18next.t('guildcleared'))
-                }
-            })
-         } catch(e) {
-             console.log("can't remove the server from the database. Aborting. \n" + e);
-             return message.channel.send(i18next.t('errorclearguild'))
-         }
-    }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
-    if (command === 'resend') {
-        if (args.length > 0) {
-            return message.channel.send(i18next.t('noargument'));
-        }
-        send_message();
-    }
-});
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
-    if (command === 'retry') {
-        if (args.length > 0) {
-            return message.channel.send(i18next.t('noargument'));
-        }
-        send_message()
-    }
-})
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
-    if (command === 'help') {
-        if (args.length > 0 && args.length < 2) {
-            if(args[0] == 'retry') {
-                return message.channel.send(i18next.t('retryhelp'))
-            }
-            if(args[0] == 'reset') {
-                return message.channel.send(i18next.t('resethelp'))
-            }
-            if(args[0] == 'configure') {
-                return message.channel.send(i18next.t('configurehelp'))
-            }
-        }
-        else if(args.length == 0) {
-            return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
-        } else {
-            return message.channel.send(i18next.t('toomucharguments') + message.author);
-        }
-    }
-})
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    let sendmessage = ""
-    
-    if (command === 'update') {
-        if (args.length < 0) {
-            return message.channel.send(i18next.t('notenougharguments') + message.author);
-        }
-        for (let index = 1; index < args.length; index++) {
-            sendmessage += args[index] + " "
-        }
-
-        if (args[0] == 'fr') {
-            collection.find().forEach(cursor => {
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                    if(client.channels.get(cursor.channel)) {
-                        client.channels.get(cursor.channel).send(sendmessage)
-                    }
-                }
-            });
-        } else {
-            collection.find().forEach(cursor => {
-                if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
-                    if(client.channels.get(cursor.channel)) {
-                        client.channels.get(cursor.channel).send(sendmessage)
-                    }
-                }
-            });
-        }
-    }
-})
-
-/*
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-
-    if(command === 'news') {
-
-    }
-})
-*/
-client.login(process.env['token']);
