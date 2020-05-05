@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "discord bot for Wakfu almanax",
   "main": "wakmanax.js",
+  "type": "module",
   "dependencies": {
     "discord.js": "^11.5.1",
     "feedparser": "^2.2.9",
