@@ -22,6 +22,8 @@ i18next.init({
     lng: 'en',
     whitelist: ['fr', 'en'],
     debug: true,
+    fallbackLng: 'en',
+    preload: ['fr', 'en'],
     resources: {
         en: {
             translation: {
