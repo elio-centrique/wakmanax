@@ -29,8 +29,8 @@ i18next.init({
                 "sent_everyone": 'I just send almanax for every channels.',
                 "fail_sent": "can't schedule the almanax messages, aborting. \n",
                 "fail_set_language": "can't get language from database.\n",
-                "not_enough_arguments": `You didn't provide enough arguments, ${message.author}!`,
-                "too_much_arguments": `You provide too much arguments, ${message.author}!`,
+                "not_enough_arguments": `You didn't provide enough arguments, `,
+                "too_much_arguments": `You provide too much arguments, `,
                 "guild_updated": ' has been updated.',
                 "updated_guild": 'Your channel has been modified for ',
                 "guild_configurated": " has been inserted on DB.",
@@ -51,8 +51,8 @@ i18next.init({
                 "sent_everyone": 'I just send almanax for every channels.',
                 "fail_sent": "can't schedule the almanax messages, aborting. \n",
                 "fail_set_language": "can't get language from database.\n",
-                "not_enough_arguments": `Vous n'avez pas mis assez d'arguments, ${message.author}!`,
-                "too_much_arguments": `Vous avez mis trop d'arguments, ${message.author}!`,
+                "not_enough_arguments": `Vous n'avez pas mis assez d'arguments, `,
+                "too_much_arguments": `Vous avez mis trop d'arguments, `,
                 "guild_updated": ' has been updated.',
                 "updated_guild": 'Votre canal a bien été modifié pour celui-ci: ',
                 "guild_configurated": " has been inserted on DB.",
@@ -140,7 +140,7 @@ client.on('message', message => {
     
     if (command === 'configure') {
         if (args.length < 2) {
-            return message.channel.send(i18next.t('not_enough_arguments'));
+            return message.channel.send(i18next.t('not_enough_arguments') + message.author);
         }
         try {
             collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
@@ -243,7 +243,7 @@ client.on('message', message => {
         else if(args.length == 0) {
             return message.channel.send(i18next.t('help') + "\n" + i18next.t('reset_help') + "\n" + i18next.t('retry_help') + "\n" + i18next.t('configure_help'))
         } else {
-            return message.channel.send(i18next.t('too_much_arguments'));
+            return message.channel.send(i18next.t('too_much_arguments') + message.author);
         }
     }
 })
@@ -257,7 +257,7 @@ client.on('message', message => {
     
     if (command === 'update') {
         if (args.length < 0) {
-            return message.channel.send(i18next.t('not_enough_arguments'));
+            return message.channel.send(i18next.t('not_enough_arguments') + message.author);
         }
         for (let index = 1; index < args.length; index++) {
             sendmessage += args[index] + " "
