@@ -42,7 +42,7 @@ i18next.init({
                 'retry_help': 'a!retry: tries to fire the almanax to your registered channel.',
                 'reset_help': 'a!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.',
                 'configure_help': 'a!configure: configure the bot for your server. You can use this command to change the output channel or the language. Usage: a!configure en #channel.',
-                'help': 'Here\'s the list of the commands:',
+                'help': 'Here\'s the list of the commands:'
             }
         },
         fr: {
@@ -64,7 +64,7 @@ i18next.init({
                 'retry_help': 'a!retry: tente d\'envoyer l\'alamanax sur le canal configuré.',
                 'reset_help': 'a!reset: Supprime la configuration actuelle duserveur. Utile si vous souhaitez retirer le bot de votre serveur.',
                 'configure_help': 'a!configure: configure le bot pour votre serveur. Vous pouvez utiliser cette commande pour changer la langue ou le canal. Utilisation: a!configure fr #canal.',
-                'help': 'Voici la liste des commandes:',
+                'help': 'Voici la liste des commandes:'
             }
         }
     }
