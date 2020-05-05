@@ -8,6 +8,7 @@
     "feedparser": "^2.2.9",
     "fs": "0.0.1-security",
     "http": "^0.0.0",
+    "i18next": "^19.4.4",
     "mariadb": "^2.1.5",
     "mongodb": "^3.5.2",
     "mysql": "^2.18.0",
