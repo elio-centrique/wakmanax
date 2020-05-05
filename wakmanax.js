@@ -79,6 +79,7 @@ i18next.init({
                 almanax_sent = true;
             }, {timezone: 'Europe/Paris'})
             cron.schedule('10 23 * * *', () =>{
+                console.log('reset timer cron')
                 almanax_sent = false;
             }, {timezone: 'Europe/Paris'})
         } catch(e) {
