@@ -73,11 +73,12 @@ i18next.init({
 }).then(function(t) {
     client.on('ready', () => {
         try {
-            cron.schedule('0 5 23 * * *', () =>{
+            cron.schedule('05 23 * * *', () =>{
+                console.log('sending almanax from cron')
                 send_message();
                 almanax_sent = true;
             }, {timezone: 'Europe/Paris'})
-            cron.schedule('0 10 23 * * *', () =>{
+            cron.schedule('10 23 * * *', () =>{
                 almanax_sent = false;
             }, {timezone: 'Europe/Paris'})
         } catch(e) {
@@ -149,6 +150,7 @@ i18next.init({
     });
     
     client.on('message', message => {
+        console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
         if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
         const args = message.content.slice(prefix.length).split(' ');
         const command = args.shift().toLowerCase();
