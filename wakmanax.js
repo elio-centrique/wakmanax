@@ -21,7 +21,7 @@ mongo_client.connect(err => {
 i18next.init({
     lng: 'en',
     whitelist: ['fr', 'en'],
-    debug: false,
+    debug: true,
     resources: {
         en: {
             translation: {
@@ -237,7 +237,7 @@ client.on('message', message => {
                 return message.channel.send(i18next.t('resethelp'))
             }
             if(args[0] == 'configure') {
-                return message.channel.send('' + i18next.t('configurehelp'))
+                return message.channel.send(i18next.t('configurehelp'))
             }
         }
         else if(args.length == 0) {
