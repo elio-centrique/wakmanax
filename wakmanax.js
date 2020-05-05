@@ -241,9 +241,9 @@ client.on('message', message => {
             }
         }
         else if(args.length == 0) {
-            return message.channel.send(i18next.t('help') + "\n" + i18next.t('reset_help') + "\n" + i18next.t('retry_help') + "\n" + i18next.t('configure_help'))
+            return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
         } else {
-            return message.channel.send(i18next.t('too_much_arguments') + message.author);
+            return message.channel.send(i18next.t('toomucharguments') + message.author);
         }
     }
 })
