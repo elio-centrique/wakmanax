@@ -179,6 +179,7 @@ i18next.init({
             if (args.length > 0) {
                 return message.channel.send(i18next.t('noargument'));
             }
+            console.log('je crois que j\'ai fait une connerie');
             send_message()
         }
     })
