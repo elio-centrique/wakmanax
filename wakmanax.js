@@ -99,7 +99,7 @@ function send_message() {
     })
 }
 
-function setLanguage(language = null) {
+function setLanguage(message, language = null) {
     if (language) {
         i18next.changeLanguage(language);
         return;
@@ -136,7 +136,7 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage(args[0])
+    setLanguage(message, args[0])
     
     if (command === 'configure') {
         if (args.length < 2) {
@@ -174,7 +174,7 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage();
+    setLanguage(message);
     
     if (command === 'reset') {
         if (args.length > 0) {
@@ -198,7 +198,7 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage()
+    setLanguage(message)
     
     if (command === 'resend') {
         if (args.length > 0) {
@@ -212,7 +212,7 @@ client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage()
+    setLanguage(mesage)
     
     if (command === 'retry') {
         if (args.length > 0) {
@@ -226,7 +226,7 @@ client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage()
+    setLanguage(message)
     
     if (command === 'help') {
         if (args.length > 0 && args.length < 2) {
@@ -252,7 +252,7 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage()
+    setLanguage(message)
     let sendmessage = ""
     
     if (command === 'update') {
