@@ -73,7 +73,7 @@ i18next.init({
 }).then(function(t) {
     client.on('ready', () => {
         try {
-            cron.schedule('05 23 * * *', () =>{
+            cron.schedule('5 23 * * *', () =>{
                 console.log('sending almanax from cron')
                 send_message();
                 almanax_sent = true;
