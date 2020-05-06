@@ -70,213 +70,7 @@ i18next.init({
             }
         }
     }
-}).then(function(t) {
-    client.on('ready', () => {
-        try {
-            cron.schedule('5 23 * * *', () =>{
-                console.log('sending almanax from cron')
-                send_message();
-                almanax_sent = true;
-            }, {timezone: 'Europe/Paris'})
-            cron.schedule('10 23 * * *', () =>{
-                console.log('reset timer cron')
-                almanax_sent = false;
-            }, {timezone: 'Europe/Paris'})
-        } catch(e) {
-            console.log(i18next.t("failsent") + e)
-        }       
-    });
-    
-    client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message, args[0])
-        
-        if (command === 'configure') {
-            if (args.length < 2) {
-                return message.channel.send(i18next.t('notenougharguments') + message.author);
-            }
-            try {
-                collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
-                    if(result && result.guild == message.guild.name) {
-                        let canal;
-                        message.mentions.channels.forEach(channel => {
-                            canal = channel.id
-                        })
-                        collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
-                        console.log(message.guild.name + i18next.t('guildupdated'))
-                        message.channel.send(i18next.t('updatedguild') + args[1])
-                    } else {
-                        let canal;
-                        message.mentions.channels.forEach(channel => {
-                            canal = channel.id
-                        })
-                        let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
-                        collection.insertOne(insertSQL)
-                        console.log(message.guild.name + i18next.t('guildconfigurated'));
-                        message.channel.send(i18next.t('configuratedguild') + args[1])
-                    }
-                })
-            } catch(e) {
-                console.log("can't add this server on database. Aborting. \n" + e);
-                message.channel.send(i18next.t("configurationerror"))
-            }
-        }
-    });
-    
-    client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message);
-        
-        if (command === 'reset') {
-            if (args.length > 0) {
-                return message.channel.send(i18next.t('noargument'));
-            }
-             try {
-                collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
-                    if(result) {
-                        console.log(message.guild.name + ' has been removed from the Database')
-                        return message.channel.send(i18next.t('guildcleared'))
-                    }
-                })
-             } catch(e) {
-                 console.log("can't remove the server from the database. Aborting. \n" + e);
-                 return message.channel.send(i18next.t('errorclearguild'))
-             }
-        }
-    });
-    
-    client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot ) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message)
-        
-        if (command === 'resend') {
-            if (args.length > 0) {
-                return message.channel.send(i18next.t('noargument'));
-            } if(message.author.id == "109752351643955200") {
-                console.log("it SHOULD be normal and intended that this line appear. If not, i'm in real trouble.")
-                send_message();
-            } else {
-                console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
-            }
-            
-        }
-    });
-    
-    client.on('message', message => {
-        if(!message.content.startsWith(prefix) || message.author.bot) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message)
-        
-        if (command === 'retry') {
-            if (args.length > 0) {
-                return message.channel.send(i18next.t('noargument'));
-            }
-            fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-                collection.findOne({guild: {$eq: message.guild.name}}, (err, cursor) => {
-                    try{
-                        if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                            embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                            .setDescription(json['description'][0])
-                            .addField('bonus', json['bonus'][0])
-                            .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                        } else {
-                            embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                            .setDescription(json['description'][1])
-                            .addField('bonus', json['bonus'][1])
-                            .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                        }
-                        if(client.channels.cache.get(cursor.channel)) {
-                            client.channels.cache.get(cursor.channel).send(embed)
-                        }
-                    } catch(error) {
-                        console.log(cursor.guild + ": Please update the Bot Permissions.");
-                    }
-                })
-            });
-        }
-    });
-    
-    client.on('message', message => {
-        if(!message.content.startsWith(prefix) || message.author.bot) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message)
-        
-        if (command === 'help') {
-            if (args.length > 0 && args.length < 2) {
-                if(args[0] == 'retry') {
-                    return message.channel.send(i18next.t('retryhelp'))
-                }
-                if(args[0] == 'reset') {
-                    return message.channel.send(i18next.t('resethelp'))
-                }
-                if(args[0] == 'configure') {
-                    return message.channel.send(i18next.t('configurehelp'))
-                }
-            }
-            else if(args.length == 0) {
-                return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
-            } else {
-                return message.channel.send(i18next.t('toomucharguments') + message.author);
-            }
-        }
-    })
-    
-    client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-        setLanguage(message)
-        let sendmessage = ""
-        
-        if (command === 'update') {
-            if (args.length < 0) {
-                return message.channel.send(i18next.t('notenougharguments') + message.author);
-            }
-            for (let index = 1; index < args.length; index++) {
-                sendmessage += args[index] + " "
-            }
-    
-            if (args[0] == 'fr') {
-                collection.find().forEach(cursor => {
-                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                        if(client.channels.cache.get(cursor.channel)) {
-                            client.channels.cache.get(cursor.channel).send(sendmessage)
-                        }
-                    }
-                });
-            } else {
-                collection.find().forEach(cursor => {
-                    if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
-                        if(client.channels.cache.get(cursor.channel)) {
-                            client.channels.cache.get(cursor.channel).send(sendmessage)
-                        }
-                    }
-                });
-            }
-        }
-    })
-    
-    /*
-    client.on('message', message => {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
-        const args = message.content.slice(prefix.length).split(' ');
-        const command = args.shift().toLowerCase();
-    
-        if(command === 'news') {
-    
-        }
-    })
-    */
-    client.login(process.env['token']);    
-});
+})
 
 function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
@@ -328,3 +122,208 @@ function setLanguage(message, language = undefined) {
     }
 }
 
+client.on('ready', () => {
+    try {
+        cron.schedule('5 23 * * *', () =>{
+            console.log('sending almanax from cron')
+            send_message();
+            almanax_sent = true;
+        }, {timezone: 'Europe/Paris'})
+        cron.schedule('10 23 * * *', () =>{
+            console.log('reset timer cron')
+            almanax_sent = false;
+        }, {timezone: 'Europe/Paris'})
+    } catch(e) {
+        console.log(i18next.t("failsent") + e)
+    }       
+});
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message, args[0])
+    
+    if (command === 'configure') {
+        if (args.length < 2) {
+            return message.channel.send(i18next.t('notenougharguments') + message.author);
+        }
+        try {
+            collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
+                if(result && result.guild == message.guild.name) {
+                    let canal;
+                    message.mentions.channels.forEach(channel => {
+                        canal = channel.id
+                    })
+                    collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
+                    console.log(message.guild.name + i18next.t('guildupdated'))
+                    message.channel.send(i18next.t('updatedguild') + args[1])
+                } else {
+                    let canal;
+                    message.mentions.channels.forEach(channel => {
+                        canal = channel.id
+                    })
+                    let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
+                    collection.insertOne(insertSQL)
+                    console.log(message.guild.name + i18next.t('guildconfigurated'));
+                    message.channel.send(i18next.t('configuratedguild') + args[1])
+                }
+            })
+        } catch(e) {
+            console.log("can't add this server on database. Aborting. \n" + e);
+            message.channel.send(i18next.t("configurationerror"))
+        }
+    }
+});
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message);
+    
+    if (command === 'reset') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        }
+         try {
+            collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
+                if(result) {
+                    console.log(message.guild.name + ' has been removed from the Database')
+                    return message.channel.send(i18next.t('guildcleared'))
+                }
+            })
+         } catch(e) {
+             console.log("can't remove the server from the database. Aborting. \n" + e);
+             return message.channel.send(i18next.t('errorclearguild'))
+         }
+    }
+});
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot ) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+    
+    if (command === 'resend') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        } if(message.author.id == "109752351643955200") {
+            console.log("it SHOULD be normal and intended that this line appear. If not, i'm in real trouble.")
+            send_message();
+        } else {
+            console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
+        }
+        
+    }
+});
+
+client.on('message', message => {
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+    
+    if (command === 'retry') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        }
+        fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+            collection.findOne({guild: {$eq: message.guild.name}}, (err, cursor) => {
+                try{
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][0])
+                        .addField('bonus', json['bonus'][0])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    } else {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][1])
+                        .addField('bonus', json['bonus'][1])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    }
+                    if(client.channels.cache.get(cursor.channel)) {
+                        client.channels.cache.get(cursor.channel).send(embed)
+                    }
+                } catch(error) {
+                    console.log(cursor.guild + ": Please update the Bot Permissions.");
+                }
+            })
+        });
+    }
+});
+
+client.on('message', message => {
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+    
+    if (command === 'help') {
+        if (args.length > 0 && args.length < 2) {
+            if(args[0] == 'retry') {
+                return message.channel.send(i18next.t('retryhelp'))
+            }
+            if(args[0] == 'reset') {
+                return message.channel.send(i18next.t('resethelp'))
+            }
+            if(args[0] == 'configure') {
+                return message.channel.send(i18next.t('configurehelp'))
+            }
+        }
+        else if(args.length == 0) {
+            return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
+        } else {
+            return message.channel.send(i18next.t('toomucharguments') + message.author);
+        }
+    }
+})
+
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+    let sendmessage = ""
+    
+    if (command === 'update') {
+        if (args.length < 0) {
+            return message.channel.send(i18next.t('notenougharguments') + message.author);
+        }
+        for (let index = 1; index < args.length; index++) {
+            sendmessage += args[index] + " "
+        }
+
+        if (args[0] == 'fr') {
+            collection.find().forEach(cursor => {
+                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                    if(client.channels.cache.get(cursor.channel)) {
+                        client.channels.cache.get(cursor.channel).send(sendmessage)
+                    }
+                }
+            });
+        } else {
+            collection.find().forEach(cursor => {
+                if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
+                    if(client.channels.cache.get(cursor.channel)) {
+                        client.channels.cache.get(cursor.channel).send(sendmessage)
+                    }
+                }
+            });
+        }
+    }
+})
+
+/*
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+
+    if(command === 'news') {
+
+    }
+})
+*/
+client.login(process.env['token']);
