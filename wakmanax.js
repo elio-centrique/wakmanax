@@ -21,7 +21,7 @@ mongo_client.connect(err => {
 i18next.init({
     lng: 'en',
     whitelist: ['fr', 'en'],
-    debug: true,
+    debug: false,
     fallbackLng: 'en',
     preload: ['fr', 'en'],
     resources: {
@@ -82,7 +82,6 @@ function send_message(client) {
                     .setDescription(json['description'][0])
                     .addField('bonus', json['bonus'][0])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                    console.log("test2")
                 } else {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][1])
