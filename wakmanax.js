@@ -72,7 +72,7 @@ i18next.init({
     }
 })
 
-function send_message() {
+function send_message(client) {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
         console.log("test")
         if(!almanax_sent) {
@@ -126,7 +126,7 @@ client.on('ready', () => {
     try {
         cron.schedule('5 23 * * *', () =>{
             console.log('sending almanax from cron')
-            send_message();
+            send_message(client);
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
         cron.schedule('10 23 * * *', () =>{
@@ -211,7 +211,7 @@ client.on('message', message => {
             return message.channel.send(i18next.t('noargument'));
         } if(message.author.id == "109752351643955200") {
             console.log("it SHOULD be normal and intended that this line appear. If not, i'm in real trouble.")
-            send_message();
+            send_message(client);
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
         }
