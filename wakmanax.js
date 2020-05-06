@@ -77,9 +77,9 @@ function send_message(client) {
         console.log("test")
         if(!almanax_sent) {
             collection.find().forEach(cursor => {
-                console.log("test2")
                 let embed;
                 if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                    console.log("test2")
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][0])
                     .addField('bonus', json['bonus'][0])
