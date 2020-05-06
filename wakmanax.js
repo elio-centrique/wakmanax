@@ -74,7 +74,6 @@ i18next.init({
 
 function send_message(client) {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-        console.log("test")
         if(!almanax_sent) {
             collection.find().forEach(cursor => {
                 let embed;
@@ -84,14 +83,12 @@ function send_message(client) {
                     .addField('bonus', json['bonus'][0])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     console.log("test2")
-
                 } else {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][1])
                     .addField('bonus', json['bonus'][1])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                 }
-                console.log("test3")
 
                 if(client.channels.cache.get(cursor.channel)) {
                     try {
