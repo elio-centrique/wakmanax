@@ -280,8 +280,10 @@ i18next.init({
 
 function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+        console.log("test")
         if(!almanax_sent) {
             collection.find().forEach(cursor => {
+                console.log("test2")
                 let embed;
                 if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
@@ -296,6 +298,7 @@ function send_message() {
                 }
                 if(client.channels.cache.get(cursor.channel)) {
                     try {
+                        console.log("test3")
                         client.channels.cache.get(cursor.channel).send(embed)
                     } catch(error) {
                         console.log(cursor.guild + i18next.t("updatepermissions"));
