@@ -77,13 +77,12 @@ function send_message() {
         let embed;
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
-                console.log(cursor.language);
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                if(cursor.language && (cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french')) {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][0])
                     .addField('bonus', json['bonus'][0])
                     .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                } else {
+                } else if(cursor.language){
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][1])
                     .addField('bonus', json['bonus'][1])
@@ -122,7 +121,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('37 23 * * *', () =>{
+        cron.schedule('42 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
