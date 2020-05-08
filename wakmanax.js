@@ -74,12 +74,10 @@ i18next.init({
 
 function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-        console.log(client.guilds.cache)
         let embed;
         client.guilds.cache.forEach(guild => {
-            console.log("test")
             collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
-                console.log("test2")
+                console.log(cursor.language);
                 if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                     .setDescription(json['description'][0])
@@ -125,7 +123,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('27 23 * * *', () =>{
+        cron.schedule('33 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
