@@ -75,6 +75,7 @@ i18next.init({
 function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
         if(!almanax_sent) { 
+            let embed;
             client.guilds.cache.forEach(guild => {
                 collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
                     if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
@@ -122,9 +123,8 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('12 23 * * *', () =>{
+        cron.schedule('14 23 * * *', () =>{
             console.log('sending almanax from cron');
-            console.log(almanax_sent);
             send_message();
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
