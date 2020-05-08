@@ -77,7 +77,9 @@ function send_message() {
         if(!almanax_sent) { 
             let embed;
             client.guilds.cache.forEach(guild => {
+                console.log("test")
                 collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
+                    console.log("test2")
                     if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                         .setDescription(json['description'][0])
