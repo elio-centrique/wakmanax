@@ -127,7 +127,7 @@ client.once('ready', () => {
             send_message();
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
-        cron.schedule('10 23 * * *', () =>{
+        cron.schedule('15 23 * * *', () =>{
             console.log('reset timer cron')
             almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
