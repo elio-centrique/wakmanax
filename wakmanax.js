@@ -89,6 +89,7 @@ function send_message() {
                         .addField('bonus', json['bonus'][1])
                         .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     }
+                    console.log(client.channels.cache.get(cursor.channel))
                     if(client.channels.cache.get(cursor.channel)) {
                         try {
                             client.channels.cache.get(cursor.channel).send(embed)
@@ -123,7 +124,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('14 23 * * *', () =>{
+        cron.schedule('18 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
