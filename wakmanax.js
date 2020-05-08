@@ -76,6 +76,7 @@ function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
         if(!almanax_sent) { 
             let embed;
+            console.log(client.guilds.cache)
             client.guilds.cache.forEach(guild => {
                 console.log("test")
                 collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
@@ -126,7 +127,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('21 23 * * *', () =>{
+        cron.schedule('24 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
