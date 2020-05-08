@@ -74,28 +74,28 @@ i18next.init({
 
 function send_message(client) {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-        if(!almanax_sent) {
-            collection.find().forEach(cursor => {
-                let embed;
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
-                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][0])
-                    .addField('bonus', json['bonus'][0])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                } else {
-                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][1])
-                    .addField('bonus', json['bonus'][1])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                }
-
-                if(client.channels.cache.get(cursor.channel)) {
-                    try {
-                        client.channels.cache.get(cursor.channel).send(embed)
-                    } catch(error) {
-                        console.log(cursor.guild + i18next.t("updatepermissions"));
+        if(!almanax_sent) { 
+            client.guild.cache.forEach(guild => {
+                collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][0])
+                        .addField('bonus', json['bonus'][0])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    } else {
+                        embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][1])
+                        .addField('bonus', json['bonus'][1])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     }
-                }
+                    if(client.channels.cache.get(cursor.channel)) {
+                        try {
+                            client.channels.cache.get(cursor.channel).send(embed)
+                        } catch(error) {
+                            console.log(cursor.guild + ": Please update the Bot Permissions.");
+                        }
+                    }
+                })
             });
             console.log(i18next.t("senteveryone"))
         }
