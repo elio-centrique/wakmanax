@@ -76,7 +76,7 @@ function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
         let embed;
         client.guilds.cache.forEach(guild => {
-            console.log(guild)
+            console.log(guild.name)
             collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
                 if(cursor.language && (cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french')) {
                     embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
