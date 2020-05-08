@@ -77,25 +77,26 @@ function send_message() {
         let embed;
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
-                console.log(cursor)
-                if(cursor.language && (cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french')) {
-                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][0])
-                    .addField('bonus', json['bonus'][0])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                } else if(cursor.language){
-                    embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
-                    .setDescription(json['description'][1])
-                    .addField('bonus', json['bonus'][1])
-                    .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                }
-                if(client.channels.cache.get(cursor.channel)) {
-                    try {
-                        client.channels.cache.get(cursor.channel).send(embed)
-                    } catch(error) {
-                        console.log(cursor.guild + ": Please update the Bot Permissions.");
+                if(cursor) {
+                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                        embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][0])
+                        .addField('bonus', json['bonus'][0])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    } else {
+                        embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
+                        .setDescription(json['description'][1])
+                        .addField('bonus', json['bonus'][1])
+                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     }
-                }
+                    if(client.channels.cache.get(cursor.channel)) {
+                        try {
+                            client.channels.cache.get(cursor.channel).send(embed)
+                        } catch(error) {
+                            console.log(cursor.guild + ": Please update the Bot Permissions.");
+                        }
+                    }
+                }    
             })
         });
         console.log(i18next.t("senteveryone"))
@@ -122,7 +123,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('42 23 * * *', () =>{
+        cron.schedule('59 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
