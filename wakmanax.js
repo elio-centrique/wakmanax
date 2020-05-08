@@ -229,7 +229,6 @@ client.on('message', message => {
         }
         fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
             collection.findOne({guild: {$eq: message.guild.name}}, (err, cursor) => {
-                try{
                     if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
                         embed = new Discord.RichEmbed().setTitle(json['day'] + " " + json['month'] + " " + json['year'])
                         .setDescription(json['description'][0])
@@ -242,11 +241,14 @@ client.on('message', message => {
                         .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
                     }
                     if(client.channels.cache.get(cursor.channel)) {
-                        client.channels.cache.get(cursor.channel).send(embed)
+                        try {
+                            return client.channels.cache.get(cursor.channel).send(embed)
+                        } catch(error) {
+                            console.log(cursor.guild + ": Please update the Bot Permissions.");
+                            return message.channel.send("Please update the Bot Permissions.");
+                        }
+                        
                     }
-                } catch(error) {
-                    console.log(cursor.guild + ": Please update the Bot Permissions.");
-                }
             })
         });
     }
