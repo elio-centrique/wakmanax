@@ -219,6 +219,29 @@ client.on('message', message => {
 });
 
 client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot ) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+
+    count = 0
+    
+    if (command === 'stats') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        } if(message.author.id == "109752351643955200") {
+            client.guilds.cache.forEach(guild => {
+                count++;
+            });
+            message.channel.send('Il y a ' + count + 'serveurs qui m\'utilisent... Incroyable');
+        } else {
+            console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
+        }
+        
+    }
+});
+
+client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
