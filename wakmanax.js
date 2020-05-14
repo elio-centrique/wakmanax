@@ -44,7 +44,8 @@ i18next.init({
                 'retryhelp': 'a!retry: tries to fire the almanax to your registered channel.',
                 'resethelp': 'a!reset: Reset the current configuration of your server. Usefull if you want to remove the bot.',
                 'configurehelp': 'a!configure: configure the bot for your server. You can use this command to change the output channel or the language. Usage: a!configure en #channel.',
-                'help': 'Here\'s the list of the commands:'
+                'help': 'Here\'s the list of the commands:',
+                'noauthorized': 'You\'re not allowed to use this command'
             }
         },
         fr: {
@@ -66,7 +67,8 @@ i18next.init({
                 'retryhelp': 'a!retry: tente d\'envoyer l\'alamanax sur le canal configuré.',
                 'resethelp': 'a!reset: Supprime la configuration actuelle duserveur. Utile si vous souhaitez retirer le bot de votre serveur.',
                 'configurehelp': 'a!configure: configure le bot pour votre serveur. Vous pouvez utiliser cette commande pour changer la langue ou le canal. Utilisation: a!configure fr #canal.',
-                'help': 'Voici la liste des commandes:'
+                'help': 'Voici la liste des commandes:',
+                'noauthorized': 'Vous n\'êtes pas autorisé à utiliser la commande.'
             }
         }
     }
@@ -236,6 +238,7 @@ client.on('message', message => {
             message.channel.send('Il y a ' + count + 'serveurs qui m\'utilisent... Incroyable');
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
+            message.channel.send(i18next.t('noauthorized'))
         }
         
     }
