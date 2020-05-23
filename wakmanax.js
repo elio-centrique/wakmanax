@@ -291,7 +291,7 @@ client.on('message', message => {
         if (args.length > 0) {
             if(args.length == 1) {
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + gouv['server'].toUpperCase())
+                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + args[0].toUpperCase())
                     .setDescription('Voici la liste des gouverneurs:')
                     .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
                     .setTimestamp()
@@ -307,7 +307,7 @@ client.on('message', message => {
                 });
             } else if (args.length == 2){
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels de la nation ' + gouv['nation'])
+                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels de la nation ' + args[1] + 'du serveur ' + args[0].toUpperCase())
                     .setDescription('Voici la liste des gouverneurs:')
                     .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
                     .setTimestamp()
