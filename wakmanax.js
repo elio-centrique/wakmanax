@@ -296,7 +296,7 @@ client.on('message', message => {
             .setDescription('Voici la liste des gouverneurs:')
             .setTimestamp()
             .setFooter('récupéré du site officiel https://wakfu.com/fr');
-            json.foreach(gouv => {
+            json.forEach(gouv => {
                 if(gouv['server'] && gouv['server'] != 'boufton') {
                     embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
                 }
