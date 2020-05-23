@@ -297,7 +297,7 @@ client.on('message', message => {
                     .setTimestamp()
                     .setFooter('récupéré du site officiel https://wakfu.com/fr')
                     .setColor('0xffec00')
-                    .setAuthor(client.user.name, client.user.avatarURL())
+                    .setAuthor(client.user.username, client.user.avatarURL())
                     json.forEach(gouv => {
                         if(gouv['server'].toUpperCase() == args[0].toUpperCase()) {
                             embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
@@ -313,7 +313,7 @@ client.on('message', message => {
                     .setTimestamp()
                     .setFooter('récupéré du site officiel https://wakfu.com/fr')
                     .setColor('0xffec00')
-                    .setAuthor(client.user.name, client.user.avatarURL())
+                    .setAuthor(client.user.username, client.user.avatarURL())
                     json.forEach(gouv => {
                         if(gouv['server'].toUpperCase() == args[0].toUpperCase() && gouv['nation'].toUpperCase() == args[1].toUpperCase()) {
                             embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
@@ -332,7 +332,7 @@ client.on('message', message => {
                 .setTimestamp()
                 .setFooter('récupéré du site officiel https://wakfu.com/fr')
                 .setColor('0xffec00')
-                .setAuthor(client.user.name, client.user.avatarURL())
+                .setAuthor(client.user.username, client.user.avatarURL())
                 json.forEach(gouv => {
                     if(gouv['server'] && gouv['server'] != 'boufton') {
                         embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
