@@ -294,8 +294,11 @@ client.on('message', message => {
         fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
             embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels: ')
             .setDescription('Voici la liste des gouverneurs:')
+            .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
             .setTimestamp()
-            .setFooter('récupéré du site officiel https://wakfu.com/fr');
+            .setFooter('récupéré du site officiel https://wakfu.com/fr')
+            .setColor('0xffec00')
+            .setAuthor(client.user.name, client.user.avatarURL())
             json.forEach(gouv => {
                 if(gouv['server'] && gouv['server'] != 'boufton') {
                     embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
