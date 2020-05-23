@@ -235,7 +235,7 @@ client.on('message', message => {
             client.guilds.cache.forEach(guild => {
                 count++;
             });
-            message.channel.send('Il y a ' + count + 'serveurs qui m\'utilisent... Incroyable');
+            message.channel.send('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable');
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
             message.channel.send(i18next.t('noauthorized'))
@@ -277,6 +277,32 @@ client.on('message', message => {
                         
                     }
             })
+        });
+    }
+});
+
+client.on('message', message => {
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message)
+    
+    if (command === 'gouvernement') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        }
+        fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
+            embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels: ')
+            .setDescription('Voici la liste des gouverneurs:')
+            .setTimestamp()
+            .setFooter('récupéré du site officiel https://wakfu.com/fr');
+            json.foreach(gouv => {
+                if(gouv['server'] && gouv['server'] != 'boufton') {
+                    embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
+                }
+                
+            })
+            message.channel.send(embed);
         });
     }
 });
