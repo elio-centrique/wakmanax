@@ -291,21 +291,19 @@ client.on('message', message => {
         if (args.length > 0) {
             if(args.length == 1) {
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    if (gouv['server'].toUpperCase() == args[0].toUpperCase()) {
-                        embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + gouv['server'].toUpperCase())
-                        .setDescription('Voici la liste des gouverneurs:')
-                        .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                        .setTimestamp()
-                        .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                        .setColor('0xffec00')
-                        .setAuthor(client.user.name, client.user.avatarURL())
-                        json.forEach(gouv => {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);   
-                        })
-                        message.channel.send(embed);
-                    } else {
-                        message.channel.send('Impossible de trouver le serveur.')
-                    }
+                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + gouv['server'].toUpperCase())
+                    .setDescription('Voici la liste des gouverneurs:')
+                    .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
+                    .setTimestamp()
+                    .setFooter('récupéré du site officiel https://wakfu.com/fr')
+                    .setColor('0xffec00')
+                    .setAuthor(client.user.name, client.user.avatarURL())
+                    json.forEach(gouv => {
+                        if(gouv['server'].toUpperCase() == args[0].toUpperCase()) {
+                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
+                        }   
+                    })
+                    message.channel.send(embed);
                 });
             } else if (args.length == 2){
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
@@ -318,7 +316,9 @@ client.on('message', message => {
                         .setColor('0xffec00')
                         .setAuthor(client.user.name, client.user.avatarURL())
                         json.forEach(gouv => {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);   
+                            if(gouv['server'].toUpperCase() == args[0].toUpperCase() && gouv['nation'].toUpperCase() == args[1].toUpperCase()) {
+                                embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
+                            }  
                         })
                         message.channel.send(embed);
                     } else {
