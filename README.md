@@ -9,7 +9,7 @@ First of all, you need to be an administrator of a server to invite the bot. If 
 https://discordapp.com/oauth2/authorize?client_id=665325374388830210&scope=bot&permissions=93184
 This bot need read, write and add links permissions.
 
-##And then?
+## And then?
 
 That's all, the bot is ready to use, yeah !
 
