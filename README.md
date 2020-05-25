@@ -1,9 +1,9 @@
-#Wakmanax
+# Wakmanax
 
 Wakmanax is a Discord bot created with the Almanax API data provided by a fan.
 Wakmanax was developed to give the lore, the meryde and the daily bonus of the Wakfu almanax.
 
-##How to use it
+## How to use it
 
 First of all, you need to be an administrator of a server to invite the bot. If you are, congratulation, you can click on this link to invite the bot:
 https://discordapp.com/oauth2/authorize?client_id=665325374388830210&scope=bot&permissions=93184
@@ -13,7 +13,7 @@ This bot need read, write and add links permissions.
 
 That's all, the bot is ready to use, yeah !
 
-##Commands
+## Commands
 
 There are several commands for Wakmanax, but only one is usually useful.
 All arguments between "{}" are mandatory, arguments between [] are optionals.
@@ -32,14 +32,14 @@ The commands for Wakmanax: (prefix "a!")
 
 More commands will come in the next updates.
 
-##Support
+## Support
 
 If you need help with the bot (connection issues, usage, suggestions, etc...), you can join the discord server:
 https://discord.gg/w5kbMsT
 
-##Contribution
+## Contribution
 
-###Installation
+### Installation
 
 You can contribute to this project by cloning it.
 
@@ -53,7 +53,7 @@ That's it, the bot is ready to use.
 Don't forget to invite your bot on your server by creating a invitation link:
 https://discordapi.com/permissions.html (type your Client ID available in your Discord application. The bot need read, write and send links permissions.)
 
-###Github
+### Github
 
 The main github repository obey to several rules:
 - master branches are read-only branches. Only me can pull request, commit and push on it.
