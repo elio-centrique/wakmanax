@@ -78,9 +78,9 @@ function send_message() {
     fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
         let embed;
         client.guilds.cache.forEach(guild => {
-            collection.findOne({guild: {$eq: guild.name}}, (err, cursor) => {
+            collection.findOne({guild_id: {$eq: guild.id}}, (err, cursor) => {
                 if(cursor) {
-                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                    if(cursor.language === 'fr' || cursor.language === 'français' || cursor.language === 'french') {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
                         .setDescription(json['description'][0])
                         .addField('bonus', json['bonus'][0])
@@ -106,13 +106,13 @@ function send_message() {
 }
 
 function setLanguage(message, language = undefined) {
-    if (language != undefined) {
+    if (language !== undefined) {
         i18next.changeLanguage(language);
         return;
     }
     try {
-        collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
-            if(result && result.guild == message.guild.name) {
+        collection.findOne({guild_id: {$eq: message.guild.id}}, (err, result) => {
+            if(result && result.guild === message.guild.name) {
                 i18next.changeLanguage(result.language);
             } else {
                 i18next.changeLanguage('en');
@@ -150,13 +150,13 @@ client.on('message', message => {
             return message.channel.send(i18next.t('notenougharguments') + message.author);
         }
         try {
-            collection.findOne({guild: {$eq: message.guild.name}}, (err, result) => {
-                if(result && result.guild == message.guild.name) {
+            collection.findOne({guild_id: {$eq: message.guild.id}}, (err, result) => {
+                if(result && result.guild === message.guild.id) {
                     let canal;
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
                     })
-                    collection.updateOne({guild: {$eq: message.guild.name}}, {$set: {channel: canal, language: args[0]}})
+                    collection.updateOne({guild_id: {$eq: message.guild.id}}, {$set: {channel: canal, language: args[0]}})
                     console.log(message.guild.name + i18next.t('guildupdated'))
                     message.channel.send(i18next.t('updatedguild') + args[1])
                 } else {
@@ -164,7 +164,7 @@ client.on('message', message => {
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
                     })
-                    let insertSQL = {guild: message.guild.name, language: args[0], channel: canal}
+                    let insertSQL = {guild_id: message.guild.id, guild: message.guild.name, language: args[0], channel: canal}
                     collection.insertOne(insertSQL)
                     console.log(message.guild.name + i18next.t('guildconfigurated'));
                     message.channel.send(i18next.t('configuratedguild') + args[1])
@@ -188,7 +188,7 @@ client.on('message', message => {
             return message.channel.send(i18next.t('noargument'));
         }
          try {
-            collection.findOneAndDelete({guild: {$eq: message.guild.name}}, (err, result) => {
+            collection.findOneAndDelete({guild_id: {$eq: message.guild.id}}, (err, result) => {
                 if(result) {
                     console.log(message.guild.name + ' has been removed from the Database')
                     return message.channel.send(i18next.t('guildcleared'))
@@ -210,7 +210,7 @@ client.on('message', message => {
     if (command === 'resend') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
-        } if(message.author.id == "109752351643955200") {
+        } if(message.author.id === "109752351643955200") {
             console.log("it SHOULD be normal and intended that this line appear. If not, i'm in real trouble.")
             send_message();
         } else {
@@ -231,7 +231,7 @@ client.on('message', message => {
     if (command === 'stats') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
-        } if(message.author.id == "109752351643955200") {
+        } if(message.author.id === "109752351643955200") {
             client.guilds.cache.forEach(guild => {
                 count++;
             });
@@ -255,8 +255,8 @@ client.on('message', message => {
             return message.channel.send(i18next.t('noargument'));
         }
         fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
-            collection.findOne({guild: {$eq: message.guild.name}}, (err, cursor) => {
-                    if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+            collection.findOne({guild_id: {$eq: message.guild.id}}, (err, cursor) => {
+                    if(cursor.language === 'fr' || cursor.language === 'français' || cursor.language === 'french') {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
                         .setDescription(json['description'][0])
                         .addField('bonus', json['bonus'][0])
@@ -289,7 +289,7 @@ client.on('message', message => {
     
     if (command === 'gouvernement') {
         if (args.length > 0) {
-            if(args.length == 1) {
+            if(args.length === 1) {
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
                     embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + args[0].toUpperCase())
                     .setDescription('Voici la liste des gouverneurs:')
@@ -299,13 +299,13 @@ client.on('message', message => {
                     .setColor('0xffec00')
                     .setAuthor(client.user.username, client.user.avatarURL())
                     json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() == args[0].toUpperCase()) {
+                        if(gouv['server'].toUpperCase() === args[0].toUpperCase()) {
                             embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
                         }   
                     })
                     message.channel.send(embed);
                 });
-            } else if (args.length == 2){
+            } else if (args.length === 2){
                 fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
                     embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels de la nation ' + args[1] + 'du serveur ' + args[0].toUpperCase())
                     .setDescription('Voici la liste des gouverneurs:')
@@ -315,7 +315,7 @@ client.on('message', message => {
                     .setColor('0xffec00')
                     .setAuthor(client.user.username, client.user.avatarURL())
                     json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() == args[0].toUpperCase() && gouv['nation'].toUpperCase() == args[1].toUpperCase()) {
+                        if(gouv['server'].toUpperCase() === args[0].toUpperCase() && gouv['nation'].toUpperCase() === args[1].toUpperCase()) {
                             embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
                         }  
                     })
@@ -334,7 +334,7 @@ client.on('message', message => {
                 .setColor('0xffec00')
                 .setAuthor(client.user.username, client.user.avatarURL())
                 json.forEach(gouv => {
-                    if(gouv['server'] && gouv['server'] != 'boufton') {
+                    if(gouv['server'] && gouv['server'] !== 'boufton') {
                         embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
                     }
                 })
@@ -352,17 +352,17 @@ client.on('message', message => {
     
     if (command === 'help') {
         if (args.length > 0 && args.length < 2) {
-            if(args[0] == 'retry') {
+            if(args[0] === 'retry') {
                 return message.channel.send(i18next.t('retryhelp'))
             }
-            if(args[0] == 'reset') {
+            if(args[0] === 'reset') {
                 return message.channel.send(i18next.t('resethelp'))
             }
-            if(args[0] == 'configure') {
+            if(args[0] === 'configure') {
                 return message.channel.send(i18next.t('configurehelp'))
             }
         }
-        else if(args.length == 0) {
+        else if(args.length === 0) {
             return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp'))
         } else {
             return message.channel.send(i18next.t('toomucharguments') + message.author);
@@ -371,7 +371,7 @@ client.on('message', message => {
 })
 
 client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id != "109752351643955200") return;
+    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id !== "109752351643955200") return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
     setLanguage(message)
@@ -385,9 +385,9 @@ client.on('message', message => {
             sendmessage += args[index] + " "
         }
 
-        if (args[0] == 'fr') {
+        if (args[0] === 'fr') {
             collection.find().forEach(cursor => {
-                if(cursor.language == 'fr' || cursor.language == 'français' || cursor.language == 'french') {
+                if(cursor.language === 'fr' || cursor.language === 'français' || cursor.language === 'french') {
                     if(client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(sendmessage)
                     }
@@ -395,7 +395,7 @@ client.on('message', message => {
             });
         } else {
             collection.find().forEach(cursor => {
-                if(cursor.language == 'en' || cursor.language == 'english' || cursor.language == 'anglais') {
+                if(cursor.language === 'en' || cursor.language === 'english' || cursor.language === 'anglais') {
                     if(client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(sendmessage)
                     }
@@ -405,15 +405,34 @@ client.on('message', message => {
     }
 })
 
-/*
+
 client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (!message.content.startsWith(prefix) || message.author.bot ) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
+    setLanguage(message);
 
-    if(command === 'news') {
+    if (command === 'bdd') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        } if(message.author.id === "109752351643955200") {
+            client.guilds.cache.forEach(guild => {
+                let id_guild = guild.id;
+                let guild_name = guild.name;
+                try {
+                    collection.updateOne({guild: {$eq: guild_name}}, {$set: {guild_id: id_guild}})
+                } catch (e) {
+                    console.log("erreur en modifiant " + guild_name)
+                }
+
+            });
+        } else {
+            console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
+            message.channel.send(i18next.t('noauthorized'))
+        }
 
     }
-})
-*/
+});
+
+
 client.login(process.env['token']);
