@@ -112,7 +112,7 @@ function setLanguage(message, language = undefined) {
     }
     try {
         collection.findOne({guild_id: {$eq: message.guild.id}}, (err, result) => {
-            if(result && result.guild === message.guild.name) {
+            if(result && result.guild_id === message.guild.id) {
                 i18next.changeLanguage(result.language);
             } else {
                 i18next.changeLanguage('en');
@@ -151,7 +151,7 @@ client.on('message', message => {
         }
         try {
             collection.findOne({guild_id: {$eq: message.guild.id}}, (err, result) => {
-                if(result && result.guild === message.guild.id) {
+                if(result && result.guild_id === message.guild.id) {
                     let canal;
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
