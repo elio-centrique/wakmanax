@@ -51,13 +51,15 @@ You can contribute to this project by cloning it.
 
 First of all, you need to install a NodeJS environment.
 
-Then, go to the repository folder, open a CMD and type "node install" (keep it open after the installation).
+Then, go to the repository folder, open a CMD and type "npm install" (keep it open after the installation).
 
 After that, go to https://discordapp.com/developers/applications and create a new application.
 
 Go to "Bot", configure it and copy the token.
 
 search in the code the "client.token()" line and replace its content.
+
+You'll also need a Mongo database. You can create a free database on Mongo Atlas and then add your own credentials.
 
 Finnaly, run the "node Wakmanax.js" command to run the bot.
 
@@ -67,7 +69,7 @@ Don't forget to invite your bot on your server by creating a invitation link:
 
 https://discordapi.com/permissions.html (type your Client ID available in your Discord application. 
 
-The bot need read, write and send links permissions.)
+(The bot need read, write and send links permissions.)
 
 ### Github
 
