@@ -29,16 +29,16 @@ i18next.init({
             translation: {
                 "updatepermissions": ": Please update the Bot Permissions.",
                 "senteveryone": 'I just send almanax for every channels.',
-                "failsent": "can't schedule the almanax messages, aborting. \n",
-                "failsetlanguage": "can't get language from database.\n",
+                "failsent": " can't schedule the almanax messages, aborting. \n",
+                "failsetlanguage": " can't get language from database.\n",
                 "notenougharguments": `You didn't provide enough arguments, `,
                 "toomucharguments": `You provide too much arguments, `,
                 "guildupdated": ' has been updated.',
                 "updatedguild": 'Your channel has been modified for ',
                 "guildconfigurated": " has been inserted on DB.",
                 "configuratedguild": 'Your guild has been configured for ',
-                "configurationerror": 'An error occured, your server was not added to the database. Please retry.',
-                "noargument": `This command don't need arguments!`,
+                "configurationerror": ' An error occured, your server was not added to the database. Please retry.',
+                "noargument": 'This command don\'t need arguments!',
                 'guildcleared': 'Your Almanax channel has been cleared, I will no more post on your server.',
                 'errorclear_guild': 'Your guild couldn\'t be deleted from the database. Please retry.',
                 'retryhelp': 'a!retry: tries to fire the almanax to your registered channel.',
@@ -53,14 +53,14 @@ i18next.init({
                 "updatepermissions": ": Please update the Bot Permissions.",
                 "senteveryone": 'I just send almanax for every channels.',
                 "failsent": "can't schedule the almanax messages, aborting. \n",
-                "failsetlanguage": "can't get language from database.\n",
+                "failsetlanguage": " can't get language from database.\n",
                 "notenougharguments": `Vous n'avez pas mis assez d'arguments, `,
                 "toomucharguments": `Vous avez mis trop d'arguments, `,
                 "guildupdated": ' has been updated.',
                 "updatedguild": 'Votre canal a bien été modifié pour celui-ci: ',
                 "guildconfigurated": " has been inserted on DB.",
                 "configuratedguild": 'Votre serveur a été configuré pour le canal ',
-                "configurationerror": 'Une erreur est survenue, votre serveur n\'a pas pu être ajouté. Merci de réessayer.',
+                "configurationerror": ' Une erreur est survenue, votre serveur n\'a pas pu être ajouté. Merci de réessayer.',
                 "noargument": `Cette command ne nécessite aucun argument!`,
                 'guildcleared': 'Votre configuration a été supprimée. Je ne posterai plus sur ce serveur.',
                 'errorclearguild': 'Votre serveur n\'a pas pu être supprimé de la base de données. Merci de réessayer.',
@@ -119,7 +119,7 @@ function setLanguage(message, language = undefined) {
             }
         })
     } catch(e) {
-        console.log(i18next.t("failsetlanguage") + e);
+        console.log(message.guild.name + i18next.t("failsetlanguage") + e);
     }
 }
 
@@ -156,7 +156,7 @@ client.on('message', message => {
                     message.mentions.channels.forEach(channel => {
                         canal = channel.id
                     })
-                    collection.updateOne({guild_id: {$eq: message.guild.id}}, {$set: {channel: canal, language: args[0]}})
+                    collection.updateOne({guild_id: {$eq: message.guild.id}}, {$set: {channel: canal, language: args[0], guild: message.guild.name}})
                     console.log(message.guild.name + i18next.t('guildupdated'))
                     message.channel.send(i18next.t('updatedguild') + args[1])
                 } else {
@@ -171,7 +171,7 @@ client.on('message', message => {
                 }
             })
         } catch(e) {
-            console.log("can't add this server on database. Aborting. \n" + e);
+            console.log(message.guild.name + " can't add this server on database. Aborting. \n" + e);
             message.channel.send(i18next.t("configurationerror"))
         }
     }
@@ -195,7 +195,7 @@ client.on('message', message => {
                 }
             })
          } catch(e) {
-             console.log("can't remove the server from the database. Aborting. \n" + e);
+             console.log(message.guild.name + " can't remove the server from the database. Aborting. \n" + e);
              return message.channel.send(i18next.t('errorclearguild'))
          }
     }
@@ -427,7 +427,7 @@ client.on('message', message => {
 
             });
         } else {
-            console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
+            console.log(message.author.username + " from " + message.guild.name + " tries to use bdd command.")
             message.channel.send(i18next.t('noauthorized'))
         }
 
