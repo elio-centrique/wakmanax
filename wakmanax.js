@@ -125,12 +125,12 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('01 23 * * *', () =>{
+        cron.schedule('00 00 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
-        cron.schedule('05 23 * * *', () =>{
+        cron.schedule('05 00 * * *', () =>{
             console.log('reset timer cron')
             almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
