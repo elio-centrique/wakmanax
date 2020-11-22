@@ -256,7 +256,7 @@ client.on('message', message => {
         }
         fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
             collection.findOne({guild_id: {$eq: message.guild.id}}, (err, cursor) => {
-                    if(cursor && cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
+                    if(cursor.language && cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
                         .setDescription(json['description'][0])
                         .addField('bonus', json['bonus'][0])
