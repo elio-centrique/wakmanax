@@ -152,13 +152,6 @@ client.on('message', message => {
         let send_at = message.createdTimestamp;
         message.channel.send("Pong! " + (Date.now() - send_at) + "ms.");
     }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message, args[0])
     
     if (command === 'configure') {
         if (args.length < 2) {
@@ -190,13 +183,6 @@ client.on('message', message => {
             message.channel.send(i18next.t("configurationerror"))
         }
     }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
     
     if (command === 'reset') {
         if (args.length > 0) {
@@ -214,13 +200,6 @@ client.on('message', message => {
              return message.channel.send(i18next.t('errorclearguild'))
          }
     }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
     
     if (command === 'resend') {
         if (args.length > 0) {
@@ -233,17 +212,9 @@ client.on('message', message => {
         }
         
     }
-});
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-
-    count = 0
     
     if (command === 'stats') {
+        count = 0
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
         } if(message.author.id === "109752351643955200") {
@@ -257,13 +228,6 @@ client.on('message', message => {
         }
         
     }
-});
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
     
     if (command === 'retry') {
         if (args.length > 0) {
@@ -294,76 +258,6 @@ client.on('message', message => {
             })
         });
     }
-});
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
-    if (command === 'gouvernement') {
-        if (args.length > 0) {
-            if(args.length === 1) {
-                fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + args[0].toUpperCase())
-                    .setDescription('Voici la liste des gouverneurs:')
-                    .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                    .setTimestamp()
-                    .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                    .setColor('0xffec00')
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() === args[0].toUpperCase()) {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                        }   
-                    })
-                    message.channel.send(embed);
-                });
-            } else if (args.length === 2){
-                fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels de la nation ' + args[1] + 'du serveur ' + args[0].toUpperCase())
-                    .setDescription('Voici la liste des gouverneurs:')
-                    .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                    .setTimestamp()
-                    .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                    .setColor('0xffec00')
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() === args[0].toUpperCase() && gouv['nation'].toUpperCase() === args[1].toUpperCase()) {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                        }  
-                    })
-                    message.channel.send(embed);
-                });
-            } else {
-                message.channel.send(i18next.t('toomucharguments'));
-            }
-        } else {
-            fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels: ')
-                .setDescription('Voici la liste des gouverneurs:')
-                .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                .setTimestamp()
-                .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                .setColor('0xffec00')
-                .setAuthor(client.user.username, client.user.avatarURL())
-                json.forEach(gouv => {
-                    if(gouv['server'] && gouv['server'] !== 'boufton') {
-                        embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                    }
-                })
-                message.channel.send(embed);
-            });
-        }
-    }
-});
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
     
     if (command === 'help') {
         if (args.length > 0 && args.length < 2) {
@@ -383,14 +277,6 @@ client.on('message', message => {
             return message.channel.send(i18next.t('toomucharguments') + message.author);
         }
     }
-})
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id !== "109752351643955200") return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    let sendmessage = ""
     
     if (command === 'update') {
         if (args.length < 0) {
@@ -418,15 +304,7 @@ client.on('message', message => {
             });
         }
     }
-})
-
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
-
+    
     if (command === 'ping') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
