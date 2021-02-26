@@ -140,6 +140,21 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot ) return;
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
+    setLanguage(message);
+
+    if (command === 'ping') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        }
+        let send_at = message.createdTimestamp;
+        message.channel.send("Pong! " + (Date.now() - send_at) + "ms.");
+    }
+});
+
+client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
@@ -433,21 +448,5 @@ client.on('message', message => {
 
     }
 });
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
-
-    if (command === 'ping') {
-        if (args.length > 0) {
-            return message.channel.send(i18next.t('noargument'));
-        }
-        let send_at = message.createdTimestamp;
-        message.channel.send("Pong! " + (Date.now() - send_at) + "ms.");
-    }
-});
-
 
 client.login(process.env['token']);
