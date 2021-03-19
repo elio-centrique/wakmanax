@@ -279,6 +279,7 @@ client.on('message', message => {
     }
     
     if (command === 'update') {
+        let sendmessage = "";
         if (args.length < 0) {
             return message.channel.send(i18next.t('notenougharguments') + message.author);
         }
