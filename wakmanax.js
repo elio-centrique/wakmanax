@@ -1,5 +1,8 @@
 const i18next = require('i18next');
 
+const dotenv = require("dotenv")
+dotenv.config();
+
 const Discord = require('discord.js');
 const cron = require('node-cron');
 const fetch = require('node-fetch')
@@ -12,6 +15,10 @@ let collection = null;
 const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 let almanax_sent = false;
+let cheerio = require ('cheerio');
+let jsonframe = require ('jsonframe-cheerio');
+const axios = require('axios').default;
+
 
 mongo_client.connect(err => {
     if(err) throw err;
@@ -74,22 +81,122 @@ i18next.init({
     }
 })
 
-function send_message() {
-    fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+async function get_frame_fr(){
+    let tmp_frame;
+    await axios.get('http://www.krosmoz.com/fr/almanax').then((res) => {
+        let $ = cheerio.load(res.data);
+        jsonframe($);
+
+        let frame = {
+            day: "span[class=day-number]",
+            month: "span[class=day-text]",
+            name: "div#almanax_boss span.title",
+            description_fr: "div#almanax_boss_desc",
+            img: "div#almanax_boss_image img",
+            dofus_bonus_fr: {
+                bonus: "div.more"
+            }
+        }
+        let meryde = $('body').scrape(frame, {string: true});
+        return meryde;
+    }).then((frame) => {
+        tmp_frame = JSON.parse(frame);
+    })
+    return tmp_frame;
+}
+
+async function get_frame_en() {
+    let tmp_frame;
+    await axios.get('http://www.krosmoz.com/en/almanax').then((res) => {
+        let $ = cheerio.load(res.data);
+        jsonframe($);
+
+        let frame = {
+            description_en: "div#almanax_boss_desc",
+            dofus_bonus_en: {
+                bonus: "div.more"
+            }
+        }
+        let meryde = $('body').scrape(frame, {string: true});
+        return meryde;
+    }).then((frame) => {
+        tmp_frame = JSON.parse(frame);
+    })
+    return tmp_frame;
+}
+
+async function get_frame_total() {
+    let json_total;
+    let tmp_json;
+    await get_frame_fr().then(async(json_fr) => {
+        json_total = json_fr;
+    })
+    await get_frame_en().then(async(json_en) => {
+        tmp_json = json_en;
+    })
+    json_total['description_en'] = tmp_json['description_en'];
+    json_total['dofus_bonus_en'] = tmp_json['dofus_bonus_en'];
+    return json_total;
+}
+
+function get_wakfu_bonus(){
+    let bonus = [];
+    const today = Date.now();
+    const compare = Date.parse("2019-11-21");
+    let difference = Math.floor((((today - compare)/1000)/3600)/24);
+    switch(difference % 5) {
+        case 0:
+            bonus[0] = "+40 Prospection";
+            bonus[1] = "+40 Prospecting";
+            break;
+        case 1:
+            bonus[0] = "+20% XP & Vitesse de Fabrication";
+            bonus[1] = "+20% XP & Speed Craft";
+            break;
+        case 2:
+            bonus[0] = "+30% XP Récolte et Plantation";
+            bonus[1] = "+30% XP Harvest & Planting";
+            break;
+        case 3:
+            bonus[0] = "+20% Quantité de Récolte et Chance de Plantation";
+            bonus[1] = "+20% Quantity of Harvest & +20% Chance of Planting";
+            break;
+        case 4:
+            bonus[0] = "+40 Sagesse";
+            bonus[1] = "+40 Wisdom";
+            break;
+    }
+    return bonus;
+}
+
+
+async function send_message() {
+    get_frame_total().then((json) => {
+        let wakfu_bonus = get_wakfu_bonus();
         let embed;
+        json['description_fr'] = json['description_fr'].slice(json['description_fr'].indexOf(" "));
+        json['description_en'] = json['description_en'].slice(json['description_en'].indexOf(" "));
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild_id: {$eq: guild.id}}, (err, cursor) => {
                 if(cursor) {
-                    if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
-                        embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                        .setDescription(json['description'][0])
-                        .addField('bonus', json['bonus'][0])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
-                    } else {
-                        embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                        .setDescription(json['description'][1])
-                        .addField('bonus', json['bonus'][1])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                    if(cursor && cursor.language) {
+                        if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
+                            embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
+                                .setDescription(json['description_fr'])
+                                .addField('\u200b', '\u200b')
+                                .addField('BONUS WAKFU', wakfu_bonus[0])
+                                .addField('\u200b', '\u200b')
+                                .addField('BONUS DOFUS', json['dofus_bonus_fr']['bonus'])
+                                .setImage(json['img'])
+                        } else {
+                            embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
+                                .setDescription(json['description_en'])
+                                .addField('\u200b', '\u200b')
+                                .addField('WAKFU\'S BONUS', wakfu_bonus[1])
+                                .addField('\u200b', '\u200b')
+                                .addField('BONUS DOFUS', json['dofus_bonus_en']['bonus'])
+                                .setImage(json['img'])
+                        }
                     }
                     if(client.channels.cache.get(cursor.channel)) {
                         try {
@@ -98,11 +205,12 @@ function send_message() {
                             console.log(cursor.guild + ": Please update the Bot Permissions.");
                         }
                     }
-                }    
+                }
             })
         });
         console.log(i18next.t("senteveryone"))
     })
+
 }
 
 function setLanguage(message, language = undefined) {
@@ -175,38 +283,24 @@ client.on('message', message => {
             message.channel.send(i18next.t("configurationerror"))
         }
     }
-});
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
-    
     if (command === 'reset') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
         }
-         try {
+        try {
             collection.findOneAndDelete({guild_id: {$eq: message.guild.id}}, (err, result) => {
                 if(result) {
                     console.log(message.guild.name + ' has been removed from the Database')
                     return message.channel.send(i18next.t('guildcleared'))
                 }
             })
-         } catch(e) {
-             console.log(message.guild.name + " can't remove the server from the database. Aborting. \n" + e);
-             return message.channel.send(i18next.t('errorclearguild'))
-         }
+        } catch(e) {
+            console.log(message.guild.name + " can't remove the server from the database. Aborting. \n" + e);
+            return message.channel.send(i18next.t('errorclearguild'))
+        }
     }
-});
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
     if (command === 'resend') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
@@ -216,18 +310,11 @@ client.on('message', message => {
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
         }
-        
-    }
-});
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
+    }
 
     count = 0
-    
+
     if (command === 'stats') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
@@ -240,116 +327,51 @@ client.on('message', message => {
             console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
             message.channel.send(i18next.t('noauthorized'))
         }
-        
-    }
-});
 
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
+    }
+
     if (command === 'retry') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
         }
-        fetch('http://almanax.kasswat.com', {method: 'get'}).then(res => res.json()).then((json) => {
+        get_frame_total().then((json) => {
+            let wakfu_bonus = get_wakfu_bonus();
+            let embed;
+            json['description_fr'] = json['description_fr'].slice(json['description_fr'].indexOf(" "));
+            json['description_en'] = json['description_en'].slice(json['description_en'].indexOf(" "));
             collection.findOne({guild_id: {$eq: message.guild.id}}, (err, cursor) => {
-                    if(cursor.language && cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
+                if(cursor.language) {
+                    if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                        .setDescription(json['description'][0])
-                        .addField('bonus', json['bonus'][0])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                            .setDescription(json['description_fr'])
+                            .addField('\u200b', '\u200b')
+                            .addField('BONUS WAKFU', wakfu_bonus[0])
+                            .addField('\u200b', '\u200b')
+                            .addField('BONUS DOFUS', json['dofus_bonus_fr']['bonus'])
+                            .setImage(json['img'])
                     } else {
                         embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                        .setDescription(json['description'][1])
-                        .addField('bonus', json['bonus'][1])
-                        .setImage('https://vertylo.github.io/wakassets/merydes/' + json['img'] + '.png')
+                            .setDescription(json['description_en'])
+                            .addField('\u200b', '\u200b')
+                            .addField('WAKFU\'S BONUS', wakfu_bonus[1])
+                            .addField('\u200b', '\u200b')
+                            .addField('BONUS DOFUS', json['dofus_bonus_en']['bonus'])
+                            .setImage(json['img'])
                     }
-                    if(client.channels.cache.get(cursor.channel)) {
-                        try {
-                            return client.channels.cache.get(cursor.channel).send(embed)
-                        } catch(error) {
-                            console.log(cursor.guild + ": Please update the Bot Permissions.");
-                            return message.channel.send("Please update the Bot Permissions.");
-                        }
-                        
+                }
+                if(client.channels.cache.get(cursor.channel)) {
+                    try {
+                        return client.channels.cache.get(cursor.channel).send(embed)
+                    } catch(error) {
+                        console.log(cursor.guild + ": Please update the Bot Permissions.");
+                        return message.channel.send("Please update the Bot Permissions.");
                     }
+
+                }
             })
-        });
+        })
     }
-});
 
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
-    if (command === 'gouvernement') {
-        if (args.length > 0) {
-            if(args.length === 1) {
-                fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels du serveur: ' + args[0].toUpperCase())
-                    .setDescription('Voici la liste des gouverneurs:')
-                    .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                    .setTimestamp()
-                    .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                    .setColor('0xffec00')
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() === args[0].toUpperCase()) {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                        }   
-                    })
-                    message.channel.send(embed);
-                });
-            } else if (args.length === 2){
-                fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                    embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels de la nation ' + args[1] + 'du serveur ' + args[0].toUpperCase())
-                    .setDescription('Voici la liste des gouverneurs:')
-                    .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                    .setTimestamp()
-                    .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                    .setColor('0xffec00')
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    json.forEach(gouv => {
-                        if(gouv['server'].toUpperCase() === args[0].toUpperCase() && gouv['nation'].toUpperCase() === args[1].toUpperCase()) {
-                            embed.addField(gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                        }  
-                    })
-                    message.channel.send(embed);
-                });
-            } else {
-                message.channel.send(i18next.t('toomucharguments'));
-            }
-        } else {
-            fetch('http://gouvernement.elio-centrique.fr', {method: 'get'}).then(res => res.json()).then((json) => {
-                embed = new Discord.MessageEmbed().setTitle('Gouvernements actuels: ')
-                .setDescription('Voici la liste des gouverneurs:')
-                .setURL('https://www.wakfu.com/fr/mmorpg/communaute/actualite-politique?s=&n=')
-                .setTimestamp()
-                .setFooter('récupéré du site officiel https://wakfu.com/fr')
-                .setColor('0xffec00')
-                .setAuthor(client.user.username, client.user.avatarURL())
-                json.forEach(gouv => {
-                    if(gouv['server'] && gouv['server'] !== 'boufton') {
-                        embed.addField(gouv['server'].toUpperCase() + ': ' + gouv['nation'], gouv['name'] + " de la guilde " + gouv['guild'], true);
-                    }
-                })
-                message.channel.send(embed);
-            });
-        }
-    }
-});
-
-client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
-    
     if (command === 'help') {
         if (args.length > 0 && args.length < 2) {
             if(args[0] === 'retry') {
@@ -368,15 +390,9 @@ client.on('message', message => {
             return message.channel.send(i18next.t('toomucharguments') + message.author);
         }
     }
-})
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || message.author.id !== "109752351643955200") return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message)
     let sendmessage = ""
-    
+
     if (command === 'update') {
         if (args.length < 0) {
             return message.channel.send(i18next.t('notenougharguments') + message.author);
@@ -403,14 +419,6 @@ client.on('message', message => {
             });
         }
     }
-})
-
-
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    const args = message.content.slice(prefix.length).split(' ');
-    const command = args.shift().toLowerCase();
-    setLanguage(message);
 
     if (command === 'bdd') {
         if (args.length > 0) {
@@ -430,7 +438,6 @@ client.on('message', message => {
             console.log(message.author.username + " from " + message.guild.name + " tries to use bdd command.")
             message.channel.send(i18next.t('noauthorized'))
         }
-
     }
 });
 
