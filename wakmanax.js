@@ -248,10 +248,18 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (!message.content.startsWith(prefix) || message.author.bot ) return;
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
-    setLanguage(message, args[0])
+    setLanguage(message);
+
+    if (command === 'ping') {
+        if (args.length > 0) {
+            return message.channel.send(i18next.t('noargument'));
+        }
+        let send_at = message.createdTimestamp;
+        message.channel.send("Pong! " + (Date.now() - send_at) + "ms.");
+    }
     
     if (command === 'configure') {
         if (args.length < 2) {
@@ -310,12 +318,11 @@ client.on('message', message => {
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to send Almanax.")
         }
-
     }
-
     count = 0
 
     if (command === 'stats') {
+        count = 0
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument'));
         } if(message.author.id === "109752351643955200") {
@@ -366,7 +373,6 @@ client.on('message', message => {
                         console.log(cursor.guild + ": Please update the Bot Permissions.");
                         return message.channel.send("Please update the Bot Permissions.");
                     }
-
                 }
             })
         })
@@ -390,10 +396,10 @@ client.on('message', message => {
             return message.channel.send(i18next.t('toomucharguments') + message.author);
         }
     }
-
     let sendmessage = ""
 
     if (command === 'update') {
+        let sendmessage = "";
         if (args.length < 0) {
             return message.channel.send(i18next.t('notenougharguments') + message.author);
         }
@@ -440,6 +446,5 @@ client.on('message', message => {
         }
     }
 });
-
 
 client.login(process.env['token']);
