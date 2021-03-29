@@ -142,23 +142,23 @@ function get_wakfu_bonus(){
     const compare = Date.parse("2019-11-21");
     let difference = Math.floor((((today - compare)/1000)/3600)/24);
     switch(difference % 5) {
-        case 1:
+        case 0:
             bonus[0] = "+40 Prospection";
             bonus[1] = "+40 Prospecting";
             break;
-        case 2:
+        case 1:
             bonus[0] = "+20% XP & Vitesse de Fabrication";
             bonus[1] = "+20% XP & Speed Craft";
             break;
-        case 3:
+        case 2:
             bonus[0] = "+30% XP Récolte et Plantation";
             bonus[1] = "+30% XP Harvest & Planting";
             break;
-        case 4:
+        case 3:
             bonus[0] = "+20% Quantité de Récolte et Chance de Plantation";
             bonus[1] = "+20% Quantity of Harvest & +20% Chance of Planting";
             break;
-        case 0:
+        case 4:
             bonus[0] = "+40 Sagesse";
             bonus[1] = "+40 Wisdom";
             break;
