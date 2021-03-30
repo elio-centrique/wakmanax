@@ -230,7 +230,7 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('00 00 * * *', () =>{
+        cron.schedule('09 00 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
