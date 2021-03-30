@@ -6,6 +6,8 @@ dotenv.config();
 const Discord = require('discord.js');
 const cron = require('node-cron');
 
+const moment = require('moment-timezone');
+
 const client = new Discord.Client();
 const MongoClient = require('mongodb').MongoClient;
 const prefix = "a!"
@@ -138,10 +140,10 @@ async function get_frame_total() {
 
 function get_wakfu_bonus(){
     let bonus = [];
-    const today = Date.now() + (60*60*1000);
-    console.log(today.toDateString());
-    const compare = Date.parse("2019-11-21");
-    let difference = Math.floor((((today - compare)/1000)/3600)/24);
+    const today = moment().tz('Europe/Paris');
+    const compare = moment("20191121").tz('Europe/Paris');
+    console.log(today);
+    let difference = today.diff(compare, 'days');
     switch(difference % 5) {
         case 0:
             bonus[0] = "+40 Prospection";
