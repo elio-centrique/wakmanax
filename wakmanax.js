@@ -138,7 +138,7 @@ async function get_frame_total() {
 
 function get_wakfu_bonus(){
     let bonus = [];
-    const today = Date.now();
+    const today = Date.now() + (60*60*1000);
     const compare = Date.parse("2019-11-21");
     let difference = Math.floor((((today - compare)/1000)/3600)/24);
     switch(difference % 5) {
@@ -230,12 +230,12 @@ function setLanguage(message, language = undefined) {
 
 client.once('ready', () => {
     try {
-        cron.schedule('11 23 * * *', () =>{
+        cron.schedule('00 23 * * *', () =>{
             console.log('sending almanax from cron');
             send_message();
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
-        cron.schedule('05 00 * * *', () =>{
+        cron.schedule('05 23 * * *', () =>{
             console.log('reset timer cron')
             almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
