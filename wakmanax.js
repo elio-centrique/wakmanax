@@ -227,7 +227,7 @@ function setLanguage(message, language = undefined) {
             }
         })
     } catch(e) {
-        console.log(message.guild.name + i18next.t("failsetlanguage") + e);
+        console.log(i18next.t("failsetlanguage") + e);
     }
 }
 
