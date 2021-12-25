@@ -249,14 +249,12 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-    let author = null;
-    message.guild.members.fetch(message.author).then((user) => {
-        author = user;
-    })
     if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    if (!author.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || message.author.id !== '109752351643955200') {
-        return message.channel.send(i18next.t("noauthorized"));
-    }
+    message.guild.members.fetch(message.author).then((user) => {
+        if (!user.permissions.has(Permissions.FLAGS.ADMINISTRATOR)|| message.author.id !== '109752351643955200') {
+            return message.channel.send(i18next.t("noauthorized"));
+        }
+    })
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
     setLanguage(message);
