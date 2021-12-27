@@ -17,7 +17,6 @@ const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_p
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 let almanax_sent = false;
 let cheerio = require ('cheerio');
-let jsonframe = require ('jsonframe-cheerio');
 const {Permissions} = require("discord.js");
 const axios = require('axios').default;
 
@@ -87,41 +86,52 @@ async function get_frame_fr(){
     let tmp_frame;
     await axios.get('http://www.krosmoz.com/fr/almanax').then((res) => {
         let $ = cheerio.load(res.data);
-        jsonframe($);
 
         let frame = {
-            day: "span[class=day-number]",
-            month: "span[class=day-text]",
-            name: "div#almanax_boss span.title",
-            description_fr: "div#almanax_boss_desc",
-            img: "div#almanax_boss_image img",
+            day: $("span[class=day-number]").text(),
+            month: $("span[class=day-text]").text(),
+            name: $("div#almanax_boss span.title").text(),
+            description_fr: $("div#almanax_boss_desc").text().replace($("div#almanax_boss span.title").text(), ""),
+            img: $("div#almanax_boss_image img").attr("src"),
             dofus_bonus_fr: {
-                bonus: "div.more"
+                bonus: $("div.more").text()
+                    .replace(/ {2,}/gm, "")
+                    .replace(/\n{2,}/gm, "\n")
+                    .slice($("div.more").text()
+                        .replace(/ {2,}/gm, "")
+                        .replace(/\n{2,}/gm, "\n").length / 2 + 1)
             }
         }
-        return $('body').scrape(frame);
+        return frame
     }).then((frame) => {
-        console.log(frame.data)
-        tmp_frame = JSON.parse(frame.data);
+        tmp_frame = frame;
     })
     return tmp_frame;
 }
 
 async function get_frame_en() {
     let tmp_frame;
-    await axios.get('http://www.krosmoz.com/en/almanax').then((res) => {
+    await axios.get('http://www.krosmoz.com/fr/almanax').then((res) => {
         let $ = cheerio.load(res.data);
-        jsonframe($);
 
         let frame = {
-            description_en: "div#almanax_boss_desc",
+            day: $("span[class=day-number]").text().toString(),
+            month: $("span[class=day-text]").text().toString(),
+            name: $("div#almanax_boss span.title").text().toString(),
+            description_en: $("div#almanax_boss_desc").text().toString(),
+            img: $("div#almanax_boss_image img").attr("src").toString(),
             dofus_bonus_en: {
-                bonus: "div.more"
+                bonus: $("div.more").text()
+                    .replace(/ {2,}/gm, "")
+                    .replace(/\n{2,}/gm, "\n")
+                    .slice($("div.more-infos").text()
+                        .replace(/ {2,}/gm, "")
+                        .replace(/\n{2,}/gm, "\n").length / 2 + 1)
             }
         }
-        return $('body').scrape(frame);
+        return frame
     }).then((frame) => {
-        tmp_frame = JSON.parse(frame.data);
+        tmp_frame = frame;
     })
     return tmp_frame;
 }
@@ -251,7 +261,6 @@ client.once('ready', () => {
 
 client.on('message', async(message) => {
     if (!message.content.startsWith(prefix) || message.author.bot ) return;
-    let authorized = false;
     let requester = null;
     await message.guild.members.fetch(message.author).then((user) => {
         requester = user;
