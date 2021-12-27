@@ -99,9 +99,10 @@ async function get_frame_fr(){
                 bonus: "div.more"
             }
         }
-        return $('body').scrape(frame, {string: true});
+        return $('body').scrape(frame);
     }).then((frame) => {
-        tmp_frame = JSON.parse(frame);
+        console.log(frame.data)
+        tmp_frame = JSON.parse(frame.data);
     })
     return tmp_frame;
 }
@@ -118,9 +119,9 @@ async function get_frame_en() {
                 bonus: "div.more"
             }
         }
-        return $('body').scrape(frame, {string: true});
+        return $('body').scrape(frame);
     }).then((frame) => {
-        tmp_frame = JSON.parse(frame);
+        tmp_frame = JSON.parse(frame.data);
     })
     return tmp_frame;
 }
