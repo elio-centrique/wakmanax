@@ -210,7 +210,7 @@ async function send_message() {
                                 .setImage(json['img'])
                         }
                     }
-                    if(client.channels.cache.get(cursor.channel)) {
+                    if(client.channels.cache.get(cursor.channel) && (message.guild.me.permissions.has([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.EMBED_LINKS]))) {
                         try {
                             client.channels.cache.get(cursor.channel).send(embed)
                         } catch(error) {
@@ -385,7 +385,7 @@ client.on('message', async(message) => {
                             .setImage(json['img'])
                     }
                 }
-                if(client.channels.cache.get(cursor.channel)) {
+                if(client.channels.cache.get(cursor.channel) && (message.guild.me.permissions.has([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.EMBED_LINKS]))) {
                     try {
                         return client.channels.cache.get(cursor.channel).send(embed)
                     } catch(error) {
