@@ -251,14 +251,11 @@ client.once('ready', () => {
 client.on('message', async(message) => {
     if (!message.content.startsWith(prefix) || message.author.bot ) return;
     let authorized = false;
+    let requester = null;
     await message.guild.members.fetch(message.author).then((user) => {
-        if (!user.permissions.has(Permissions.FLAGS.ADMINISTRATOR)|| message.author.id !== '109752351643955200') {
-            authorized = false;
-        } else {
-            authorized = true;
-        }
+        requester = user;
     });
-    if(!authorized) {
+    if (!requester.permissions.has(Permissions.FLAGS.ADMINISTRATOR)|| message.author.id !== '109752351643955200') {
         return message.channel.send(i18next.t("noauthorized"));
     }
     const args = message.content.slice(prefix.length).split(' ');
