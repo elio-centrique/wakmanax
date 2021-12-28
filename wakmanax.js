@@ -17,7 +17,6 @@ const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_p
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true });
 let almanax_sent = false;
 let cheerio = require ('cheerio');
-const {Permissions} = require("discord.js");
 const axios = require('axios').default;
 
 
@@ -210,8 +209,7 @@ async function send_message() {
                                 .setImage(json['img'])
                         }
                     }
-                    if (client.channels.cache.get(cursor.channel)
-                        && (client.channels.cache.get(cursor.channel).guild.me.permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.SEND_MESSAGES]))) {
+                    if (client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
                             console.log(cursor.guild + ": Please update the Bot Permissions.");
                         })
@@ -264,9 +262,6 @@ client.on('message', async(message) => {
     await message.guild.members.fetch(message.author).then((user) => {
         requester = user;
     });
-    if (!requester.permissions.any([Permissions.FLAGS.ADMINISTRATOR, Permissions.FLAGS.MANAGE_GUILD]) || requester.id !== message.guild.ownerID || message.author.id !== '109752351643955200') {
-        return message.channel.send(i18next.t("noauthorized"));
-    }
     const args = message.content.slice(prefix.length).split(' ');
     const command = args.shift().toLowerCase();
     setLanguage(message);
@@ -384,7 +379,7 @@ client.on('message', async(message) => {
                             .setImage(json['img'])
                     }
                 }
-                if(client.channels.cache.get(cursor.channel) && (client.channels.cache.get(cursor.channel).permissionsFor(message.guild.me).has([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.SEND_MESSAGES]))) {
+                if(client.channels.cache.get(cursor.channel)) {
                     client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
                         console.log(cursor.guild + ": Please update the Bot Permissions.");
                         return message.channel.send("Please update the Bot Permissions.");
