@@ -210,7 +210,7 @@ async function send_message() {
                                 .setImage(json['img'])
                         }
                     }
-                    if(client.channels.cache.get(cursor.channel) && (client.channels.cache.get(cursor.channel).guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES))) {
+                    if(client.channels.cache.get(cursor.channel) && (client.channels.cache.get(cursor.channel).guild.me.permissions.any(Permissions.FLAGS.SEND_MESSAGES))) {
                         try {
                             client.channels.cache.get(cursor.channel).send(embed)
                         } catch(error) {
@@ -265,7 +265,7 @@ client.on('message', async(message) => {
     await message.guild.members.fetch(message.author).then((user) => {
         requester = user;
     });
-    if (!requester.permissions.has(Permissions.FLAGS.ADMINISTRATOR)|| message.author.id !== '109752351643955200') {
+    if (!requester.permissions.any([Permissions.FLAGS.ADMINISTRATOR, Permissions.FLAGS.MANAGE_GUILD]) || requester.id !== message.guild.ownerID || message.author.id !== '109752351643955200') {
         return message.channel.send(i18next.t("noauthorized"));
     }
     const args = message.content.slice(prefix.length).split(' ');
@@ -385,7 +385,7 @@ client.on('message', async(message) => {
                             .setImage(json['img'])
                     }
                 }
-                if(client.channels.cache.get(cursor.channel) && (message.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES))) {
+                if(client.channels.cache.get(cursor.channel) && (message.guild.me.permissions.any(Permissions.FLAGS.SEND_MESSAGES))) {
                     try {
                         return client.channels.cache.get(cursor.channel).send(embed)
                     } catch(error) {
