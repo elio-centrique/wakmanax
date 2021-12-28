@@ -111,7 +111,7 @@ async function get_frame_fr(){
 
 async function get_frame_en() {
     let tmp_frame;
-    await axios.get('http://www.krosmoz.com/fr/almanax').then((res) => {
+    await axios.get('http://www.krosmoz.com/en/almanax').then((res) => {
         let $ = cheerio.load(res.data);
 
         let frame = {
@@ -189,10 +189,10 @@ async function send_message() {
         json['description_fr'] = json['description_fr'].slice(json['description_fr'].indexOf(" "));
         json['description_en'] = json['description_en'].slice(json['description_en'].indexOf(" "));
         client.guilds.cache.forEach(guild => {
-            collection.findOne({guild_id: {$eq: guild.id}}, (err, cursor) => {
-                if(cursor) {
-                    if(cursor && cursor.language) {
-                        if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
+            collection.findOne({guild_id: {$eq: guild.id}}, async (err, cursor) => {
+                if (cursor) {
+                    if (cursor && cursor.language) {
+                        if (cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                             embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
                                 .setDescription(json['description_fr'])
                                 .addField('\u200b', '\u200b')
@@ -210,12 +210,11 @@ async function send_message() {
                                 .setImage(json['img'])
                         }
                     }
-                    if(client.channels.cache.get(cursor.channel) && (client.channels.cache.get(cursor.channel).guild.me.permissions.any(Permissions.FLAGS.SEND_MESSAGES))) {
-                        try {
-                            client.channels.cache.get(cursor.channel).send(embed)
-                        } catch(error) {
+                    if (client.channels.cache.get(cursor.channel)
+                        && (client.channels.cache.get(cursor.channel).guild.me.permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.SEND_MESSAGES]))) {
+                        client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
                             console.log(cursor.guild + ": Please update the Bot Permissions.");
-                        }
+                        })
                     }
                 }
             })
@@ -385,13 +384,11 @@ client.on('message', async(message) => {
                             .setImage(json['img'])
                     }
                 }
-                if(client.channels.cache.get(cursor.channel) && (message.guild.me.permissions.any(Permissions.FLAGS.SEND_MESSAGES))) {
-                    try {
-                        return client.channels.cache.get(cursor.channel).send(embed)
-                    } catch(error) {
+                if(client.channels.cache.get(cursor.channel) && (client.channels.cache.get(cursor.channel).permissionsFor(message.guild.me).has([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.SEND_MESSAGES]))) {
+                    client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
                         console.log(cursor.guild + ": Please update the Bot Permissions.");
                         return message.channel.send("Please update the Bot Permissions.");
-                    }
+                    })
                 }
             })
         })
