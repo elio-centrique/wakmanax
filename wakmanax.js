@@ -94,24 +94,32 @@ async function set_games(message, mongo_collection, games) {
                 mongo_collection.updateOne({guild_id: {$eq: message.guild.id}}, {$set: {games: games}});
                 console.log("Update server " + message.guild.name + ": set games "+ games);
                 return message.channel.send(i18next.t("gamesupdated") + games).catch((error)=>{
-                    message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                    message.author.createDM().then(() => {
+                        message.author.send(result.guild + ": P)lease update the Bot Permissions.")
+                    })
                     console.log(result.guild + ": Please update the Bot Permissions.");
                 });
             } else {
                 return message.channel.send(i18next.t("nogames")).catch((error)=>{
-                    message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                    message.author.createDM().then(() => {
+                        message.author.send(result.guild + ": Please update the Bot Permissions.")
+                    })
                     console.log(result.guild + ": Please update the Bot Permissions.");
                 });
             }
         } else {
             return message.channel.send(i18next.t("nogames")).catch((error)=>{
-                message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(result.guild + ": Please update the Bot Permissions.")
+                })
                 console.log(result.guild + ": Please update the Bot Permissions.");
             });
         }
     } else {
         return message.channel.send(i18next.t("gamenotreconized")).catch((error)=>{
-            message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+            message.author.createDM().then(() => {
+                message.author.send(result.guild + ": Please update the Bot Permissions.")
+            })
             console.log(result.guild + ": Please update the Bot Permissions.");
         });
     }
@@ -243,7 +251,9 @@ async function send_message() {
                     }
                     if (client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
-                            message.author.createDM().send(cursor.guild + ": Please update the Bot Permissions.")
+                            message.author.createDM().then(() => {
+                                message.author.send(cursor.guild + ": Please update the Bot Permissions.")
+                            })
                             console.log(cursor.guild + ": Please update the Bot Permissions.");
                         });
                     }
@@ -302,7 +312,9 @@ client.on('message', async(message) => {
     if (command === 'configure') {
         if (args.length < 2) {
             return message.channel.send(i18next.t('notenougharguments') + message.author).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });;
         }
@@ -316,7 +328,9 @@ client.on('message', async(message) => {
                     collection.updateOne({guild_id: {$eq: message.guild.id}}, {$set: {channel: canal, language: args[0], guild: message.guild.name}})
                     console.log(message.guild.name + i18next.t('guildupdated'))
                     message.channel.send(i18next.t('updatedguild') + args[1]).catch((error)=>{
-                        message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                        message.author.createDM().then(() => {
+                            message.author.send(result.guild + ": Please update the Bot Permissions.")
+                        })
                         console.log(result.guild + ": Please update the Bot Permissions.");
                     });
                 } else {
@@ -328,7 +342,9 @@ client.on('message', async(message) => {
                     collection.insertOne(insertSQL)
                     console.log(message.guild.name + i18next.t('guildconfigurated'));
                     message.channel.send(i18next.t('configuratedguild') + args[1]).catch((error)=>{
-                        message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                        message.author.createDM().then(() => {
+                            message.author.send(result.guild + ": Please update the Bot Permissions.")
+                        })
                         console.log(result.guild + ": Please update the Bot Permissions.");
                     });
                 }
@@ -336,7 +352,9 @@ client.on('message', async(message) => {
         } catch(e) {
             console.log(message.guild.name + " can't add this server on database. Aborting. \n" + e);
             message.channel.send(i18next.t("configurationerror")).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -345,7 +363,9 @@ client.on('message', async(message) => {
     if (command === 'reset') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -354,7 +374,9 @@ client.on('message', async(message) => {
                 if(result) {
                     console.log(message.guild.name + ' has been removed from the Database')
                     return message.channel.send(i18next.t('guildcleared')).catch((error)=>{
-                        message.author.createDM().send(result.guild + ": Please update the Bot Permissions.")
+                        message.author.createDM().then(() => {
+                            message.author.send(result.guild + ": Please update the Bot Permissions.")
+                        })
                         console.log(result.guild + ": Please update the Bot Permissions.");
                     });
                 }
@@ -362,7 +384,9 @@ client.on('message', async(message) => {
         } catch(e) {
             console.log(message.guild.name + " can't remove the server from the database. Aborting. \n" + e);
             return message.channel.send(i18next.t('errorclearguild')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -371,7 +395,9 @@ client.on('message', async(message) => {
     if (command === 'resend') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         } if(message.author.id === "109752351643955200") {
@@ -387,7 +413,9 @@ client.on('message', async(message) => {
         count = 0
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         } if(message.author.id === "109752351643955200") {
@@ -395,13 +423,17 @@ client.on('message', async(message) => {
                 count++;
             });
             message.channel.send('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to gets my stats.")
             message.channel.send(i18next.t('noauthorized')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -411,7 +443,9 @@ client.on('message', async(message) => {
     if (command === 'retry') {
         if (args.length > 0) {
             return message.channel.send(i18next.t('noargument')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -442,7 +476,9 @@ client.on('message', async(message) => {
                 }
                 if(client.channels.cache.get(cursor.channel)) {
                     client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
-                        message.author.createDM().send(cursor.guild + ": Please update the Bot Permissions.")
+                        message.author.createDM().then(() => {
+                            message.author.send(cursor.guild + ": Please update the Bot Permissions.")
+                        })
                         console.log(cursor.guild + ": Please update the Bot Permissions.");
                     });
                 }
@@ -454,31 +490,41 @@ client.on('message', async(message) => {
         if (args.length > 0 && args.length < 2) {
             if(args[0] === 'retry') {
                 return message.channel.send(i18next.t('retryhelp')).catch((error)=>{
-                    message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                    message.author.createDM().then(() => {
+                        message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                    })
                     console.log(message.guild.name + ": Please update the Bot Permissions.");
                 });
             }
             if(args[0] === 'reset') {
                 return message.channel.send(i18next.t('resethelp')).catch((error)=>{
-                    message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                    message.author.createDM().then(() => {
+                        message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                    })
                     console.log(message.guild.name + ": Please update the Bot Permissions.");
                 });
             }
             if(args[0] === 'configure') {
                 return message.channel.send(i18next.t('configurehelp')).catch((error)=>{
-                    message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                    message.author.createDM().then(() => {
+                        message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                    })
                     console.log(message.guild.name + ": Please update the Bot Permissions.");
                 });
             }
         }
         else if(args.length === 0) {
             return message.channel.send(i18next.t('help') + "\n" + i18next.t('resethelp') + "\n" + i18next.t('retryhelp') + "\n" + i18next.t('configurehelp')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         } else {
-            return message.channel.send(i18next.t('toomucharguments') + message.author).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+            return message.channel.send(i18next.t('toomucharguments') + message.author.username).catch((error)=>{
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -488,7 +534,9 @@ client.on('message', async(message) => {
         let sendmessage = "";
         if (args.length < 0) {
             return message.channel.send(i18next.t('notenougharguments') + message.author).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -501,7 +549,9 @@ client.on('message', async(message) => {
                 if(cursor && cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                     if(client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(sendmessage).catch((error)=>{
-                            message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                            message.author.createDM().then(() => {
+                                message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                            })
                             console.log(message.guild.name + ": Please update the Bot Permissions.");
                         });
                     }
@@ -512,7 +562,9 @@ client.on('message', async(message) => {
                 if(cursor && cursor.language.toLowerCase() !== 'fr' && cursor.language.toLowerCase() !== 'français' && cursor.language.toLowerCase() !== 'french') {
                     if(client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(sendmessage).catch((error)=>{
-                            message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                            message.author.createDM().then(() => {
+                                message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                            })
                             console.log(message.guild.name + ": Please update the Bot Permissions.");
                         });
                     }
@@ -538,7 +590,9 @@ client.on('message', async(message) => {
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to use bdd command.")
             return message.channel.send(i18next.t('noauthorized')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -561,7 +615,9 @@ client.on('message', async(message) => {
         } else {
             console.log(message.author.username + " from " + message.guild.name + " tries to use bdd command.");
             return message.channel.send(i18next.t('noauthorized')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
@@ -575,20 +631,26 @@ client.on('message', async(message) => {
                 if (result && result.guild_id === message.guild.id) {
                     if (result.games) {
                         return message.channel.send(i18next.t('gamebonus') + ' ' + result.games).catch((error)=>{
-                            message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                            message.author.createDM().then(() => {
+                                message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                            })
                             console.log(message.guild.name + ": Please update the Bot Permissions.");
                         });
 
                     } else {
                         console.log(result);
                         return message.channel.send(i18next.t("nogames")).catch((error)=>{
-                            message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                            message.author.createDM().then(() => {
+                                message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                            })
                             console.log(message.guild.name + ": Please update the Bot Permissions.");
                         });
                     }
                 } else {
                     return message.channel.send(i18next.t("nogames")).catch((error)=>{
-                        message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                        message.author.createDM().then(() => {
+                            message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                        })
                         console.log(message.guild.name + ": Please update the Bot Permissions.");
                     });
                 }
@@ -599,7 +661,9 @@ client.on('message', async(message) => {
             await set_games(message, collection, args);
         } else {
             return message.channel.send(i18next.t('toomucharguments')).catch((error)=>{
-                message.author.createDM().send(message.guild.name + ": Please update the Bot Permissions.")
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
                 console.log(message.guild.name + ": Please update the Bot Permissions.");
             });
         }
