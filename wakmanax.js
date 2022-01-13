@@ -251,9 +251,6 @@ async function send_message() {
                     }
                     if (client.channels.cache.get(cursor.channel)) {
                         client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
-                            message.author.createDM().then(() => {
-                                message.author.send(cursor.guild + ": Please update the Bot Permissions.")
-                            })
                             console.log(cursor.guild + ": Please update the Bot Permissions.");
                         });
                     }
