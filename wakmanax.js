@@ -65,7 +65,7 @@ i18next.init({
                 "senteveryone": 'I just send almanax for every channels.',
                 "failsent": "can't schedule the almanax messages, aborting. \n",
                 "failsetlanguage": " can't get language from database.\n",
-                "notenougharguments": 'Vous n\'avez pas mis assez d\'arguments, `,
+                "notenougharguments": 'Vous n\'avez pas mis assez d\'arguments, ',
                 "toomucharguments": 'Vous avez mis trop d\'arguments, ',
                 "guildupdated": ' has been updated.',
                 "updatedguild": 'Votre canal a bien été modifié pour celui-ci: ',
