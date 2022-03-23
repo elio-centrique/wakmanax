@@ -38,8 +38,8 @@ i18next.init({
                 "senteveryone": 'I just send almanax for every channels.',
                 "failsent": " can't schedule the almanax messages, aborting. \n",
                 "failsetlanguage": " can't get language from database.\n",
-                "notenougharguments": `You didn't provide enough arguments, `,
-                "toomucharguments": `You provide too much arguments, `,
+                "notenougharguments": 'You didn\'t provide enough arguments, ',
+                "toomucharguments": 'You provide too much arguments, ',
                 "guildupdated": ' has been updated.',
                 "updatedguild": 'Your channel has been modified for ',
                 "guildconfigurated": " has been inserted on DB.",
@@ -65,14 +65,14 @@ i18next.init({
                 "senteveryone": 'I just send almanax for every channels.',
                 "failsent": "can't schedule the almanax messages, aborting. \n",
                 "failsetlanguage": " can't get language from database.\n",
-                "notenougharguments": `Vous n'avez pas mis assez d'arguments, `,
-                "toomucharguments": `Vous avez mis trop d'arguments, `,
+                "notenougharguments": 'Vous n\'avez pas mis assez d\'arguments, `,
+                "toomucharguments": 'Vous avez mis trop d\'arguments, ',
                 "guildupdated": ' has been updated.',
                 "updatedguild": 'Votre canal a bien été modifié pour celui-ci: ',
                 "guildconfigurated": " has been inserted on DB.",
                 "configuratedguild": 'Votre serveur a été configuré pour le canal ',
                 "configurationerror": ' Une erreur est survenue, votre serveur n\'a pas pu être ajouté. Merci de réessayer.',
-                "noargument": `Cette command ne nécessite aucun argument!`,
+                "noargument": 'Cette command ne nécessite aucun argument!',
                 'guildcleared': 'Votre configuration a été supprimée. Je ne posterai plus sur ce serveur.',
                 'errorclearguild': 'Votre serveur n\'a pas pu être supprimé de la base de données. Merci de réessayer.',
                 'retryhelp': 'a!retry: tente d\'envoyer l\'alamanax sur le canal configuré.',
@@ -168,7 +168,7 @@ async function get_frame_en() {
                 bonus: $("div.more").text()
                     .replace(/ {2,}/gm, "")
                     .replace(/\n{2,}/gm, "\n")
-                    .slice($("div.more-infos").text()
+                    .slice($("div.more").text()
                         .replace(/ {2,}/gm, "")
                         .replace(/\n{2,}/gm, "\n").length / 2 + 1)
             }
@@ -236,16 +236,16 @@ async function send_message() {
                                 .setDescription(json['description_fr'])
                                 .addField('\u200b', '\u200b')
                                 .addField('BONUS WAKFU', wakfu_bonus[0])
-                                .addField('\u200b', '\u200b')
-                                .addField('BONUS DOFUS', json['dofus_bonus_fr']['bonus'])
+                                //.addField('\u200b', '\u200b')
+                                //.addField('BONUS DOFUS', json['dofus_bonus_fr']['bonus'])
                                 .setImage(json['img'])
                         } else {
                             embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
                                 .setDescription(json['description_en'])
                                 .addField('\u200b', '\u200b')
                                 .addField('WAKFU\'S BONUS', wakfu_bonus[1])
-                                .addField('\u200b', '\u200b')
-                                .addField('BONUS DOFUS', json['dofus_bonus_en']['bonus'])
+                                //.addField('\u200b', '\u200b')
+                                //.addField('BONUS DOFUS', json['dofus_bonus_en']['bonus'])
                                 .setImage(json['img'])
                         }
                     }
