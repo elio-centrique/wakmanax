@@ -8,7 +8,6 @@ const fs = require("fs");
 const client = new Client({intents: [Intents.FLAGS.GUILDS] });
 const {MongoClient, ServerApiVersion} = require('mongodb');
 const {locale} = require("moment/moment");
-const prefix = "a!"
 
 let collection = null;
 const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/" + process.env['db_name'] + "?retryWrites=true&w=majority";
@@ -81,7 +80,7 @@ client.on('interactionCreate', async(interaction) => {
                 }
             });
         }
-        i18next.setLanguage(language);
+        await i18next.changeLanguage(language);
         try {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, result) => {
                 if(result && result.guild_id === interaction.guild.id) {
