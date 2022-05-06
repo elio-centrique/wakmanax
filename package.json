@@ -10,6 +10,9 @@
   "keywords": [],
   "author": "elio-centrique",
   "license": "ISC",
+  "engines": {
+    "node": "^16.9.x"
+  },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
