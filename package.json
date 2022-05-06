@@ -4,10 +4,14 @@
   "description": "",
   "main": "wakmanax.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node wakmanax.js"
+  },
+  "engines": {
+    "node": "^16.6.x"
   },
   "keywords": [],
-  "author": "",
+  "author": "elio-centrique",
   "license": "ISC",
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
