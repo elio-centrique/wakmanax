@@ -7,9 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node wakmanax.js"
   },
-  "engines": {
-    "node": "^16.6.x"
-  },
   "keywords": [],
   "author": "elio-centrique",
   "license": "ISC",
