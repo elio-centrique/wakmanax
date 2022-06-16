@@ -8,7 +8,7 @@ Wakmanax was developed to give the lore, the meryde and the daily bonus of the W
 
 First of all, you need to be an administrator of a server to invite the bot. If you are, congratulation, you can click on this link to invite the bot:
 
-https://discordapp.com/oauth2/authorize?client_id=665325374388830210&scope=bot&permissions=93184
+[https://discord.com/api/oauth2/authorize?client_id=665325374388830210&permissions=68608&scope=applications.commands%20bot](https://discord.com/api/oauth2/authorize?client_id=665325374388830210&permissions=68608&scope=applications.commands%20bot)
 
 This bot need read, write and add links permissions.
 
@@ -20,19 +20,20 @@ That's all, the bot is ready to use, yeah !
 
 There are several commands for Wakmanax, but only one is usually useful.
 
-All arguments between "{}" are mandatory, arguments between [] are optionals.
+All arguments between [] are optionals.
 
-The commands for Wakmanax: (prefix "a!")
+The commands for Wakmanax: (prefix "/")
 
-    a!configure  {language} {#channel}
-    configure the channel where the bot will post
+    /config  language #channel
+    Configure the channel where the bot will post
+    This command can be used to reconfigure the bot
 
-    a!retry
+    /send
     Fire the almanax on the configurated channel.
     Usefull if you need to test your configuration
 
-    a!reset
-    resets the bot (it will no longer post a message until the a!configure command has been used again)
+    /reset
+    Resets the bot (it will no longer post a message until the a!configure command has been used again)
     There is no need to use a!reset to reconfigure a channel, you can use a!configure to change the message destination channel and the language.
 
 More commands will come in the next updates.
@@ -75,9 +76,10 @@ https://discordapi.com/permissions.html (type your Client ID available in your D
 
 The main github repository obey to several rules:
 
-- master branches are read-only branches. Only me can pull request, commit and push on it.
-- develop branch is only a merge branch. Please create a new branch from develop and create a pull request when you need to merge your work.
-- you can fork and use the repository as a template. You're free to do wathever you want on it.
+- master & develop branches is now a archive branch for V1.
+- v2 branch is a read-only branch for devs. Only me can pull request and push on it.
+- develop-v2 branch is only a merge branch. Please create a new branch from develop and create a pull request when you need to merge your work.
+- you can fork and use the repository as a template. You're free to do wathever you want on it, but you need to display that's it's a fork from this repo.
 
 Please respect these rules.
 
