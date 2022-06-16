@@ -35,6 +35,9 @@ The commands for Wakmanax: (prefix "/")
     /reset
     Resets the bot (it will no longer post a message until the a!configure command has been used again)
     There is no need to use a!reset to reconfigure a channel, you can use a!configure to change the message destination channel and the language.
+    
+    /type
+    Change the length of the Almanax (Full description [long], bonus only with picture [short], and bonus only [shorter])
 
 More commands will come in the next updates.
 
