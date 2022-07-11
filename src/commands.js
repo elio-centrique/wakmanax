@@ -117,6 +117,6 @@ rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
     .catch(console.error);
 
 
-rest.put(Routes.applicationGuildCommands(process.env.clientId), { body: private_commands })
+rest.put(Routes.applicationGuildCommands(process.env.clientId, process.env.guildId), { body: private_commands })
     .then(() => console.log('Successfully registered guild commands.'))
     .catch(console.error);
