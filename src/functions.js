@@ -197,7 +197,7 @@ function get_wakfu_bonus(){
 }
 
 
-async function send_message() {
+async function send_message(client) {
     get_frame_total().then((json) => {
         let wakfu_bonus = get_wakfu_bonus();
         let embed;
