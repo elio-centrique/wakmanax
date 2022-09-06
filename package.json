@@ -21,7 +21,7 @@
     "dotenv": "^16.0.0",
     "fs": "^0.0.1-security",
     "i18next": "^21.6.16",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.35",
     "mongodb": "^4.5.0",
     "node-cron": "^3.0.0",
