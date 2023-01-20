@@ -199,7 +199,11 @@ function get_wakfu_bonus(){
 }
 
 
+<<<<<<< HEAD
 async function send_message(client, collection, interaction = undefined) {
+=======
+async function send_message(client) {
+>>>>>>> 091254d76aa3a2b3e7d51ec1f746b4fbdb4be5f0
     get_frame_total().then((json) => {
         let wakfu_bonus = get_wakfu_bonus();
         let embed;

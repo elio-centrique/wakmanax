@@ -156,8 +156,16 @@ client.on('interactionCreate', async(interaction) => {
             client.guilds.cache.forEach(guild => {
                 count++;
             });
+<<<<<<< HEAD
             interaction.editReply('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
                 sendError(interaction);
+=======
+            message.channel.send('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
+                console.log(message.guild.name + ": Please update the Bot Permissions.");
+>>>>>>> 091254d76aa3a2b3e7d51ec1f746b4fbdb4be5f0
             });
         }
     }
