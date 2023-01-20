@@ -204,7 +204,6 @@ async function send_message(client, collection, interaction = undefined) {
     get_frame_total().then((json) => {
         let wakfu_bonus = get_wakfu_bonus();
         let embed;
-		console.log(json);
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild_id: {$eq: guild.id}}, async (err, cursor) => {
                 if (cursor && cursor.language) {

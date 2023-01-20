@@ -215,7 +215,7 @@ client.on('interactionCreate', async(interaction) => {
                         }
                     }
                 }
-                if (client.channels.cache.get(cursor.channel)) {
+                if (cursor && client.channels.cache.get(cursor.channel)) {
                     client.channels.cache.get(cursor.channel).send({embeds: [embed]}).catch((error)=>{
                         sendError(interaction)
                     });
