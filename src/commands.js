@@ -47,6 +47,9 @@ const commands = [
         .setDescriptionLocalization('fr', 'Changer la taille du message de l\'almanax')
         .setDescription('Change how the bot displays the Almanax'),
 
+].map(command => command.toJSON());
+
+const private_commands = [
     new SlashCommandBuilder()
         .setName('resend')
         .setNameLocalization('fr','renvoyer')
@@ -80,7 +83,6 @@ const commands = [
                 .setDescription('The message to send')
                 .setRequired(true))
         .setDefaultPermission(false)
-
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
@@ -91,6 +93,9 @@ rest.get(Routes.applicationGuildCommands(process.env.clientId, process.env.guild
         const deleteUrl = `${Routes.applicationGuildCommands(process.env.clientId, process.env.guildId)}/${command.id}`;
         promises.push(rest.delete(deleteUrl));
     }
+    rest.put(Routes.applicationGuildCommands(process.env.clientId, process.env.guildId), { body: private_commands })
+        .then(() => console.log('Successfully registered privates commands.'))
+        .catch(console.error);
     return Promise.all(promises);
 })
 
@@ -100,10 +105,13 @@ rest.get(Routes.applicationCommands(process.env.clientId)).then(data => {
         const deleteUrl = `${Routes.applicationCommands(process.env.clientId)}/${command.id}`;
         promises.push(rest.delete(deleteUrl));
     }
+    rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
+        .then(() => console.log('Successfully registered application commands.'))
+        .catch(console.error);
     return Promise.all(promises);
-})
+});
 
 
-rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
-    .then(() => console.log('Successfully registered application commands.'))
-    .catch(console.error);
+
+
+

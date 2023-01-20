@@ -1,4 +1,4 @@
-const {Permissions} = require("discord.js");
+const {Permissions, MessageEmbed} = require("discord.js");
 const i18next = require("i18next");
 const moment = require('moment-timezone');
 const fetch = require('node-fetch-npm');
@@ -47,6 +47,7 @@ i18next.init({
                 'typedescshorter': 'Display only the bonus of the day',
                 'displayed': 'Your almanax will now be displayed ',
                 'pleaseconfigure': 'Your server has not been configured. Please use /config before using this command.',
+				'pleasesetchannel': 'No channel has been configurated. Please retry with a #channel to continue',
 
                 'monthprotector': 'Month protector: ',
                 'meridia': 'Meridia',
@@ -88,6 +89,7 @@ i18next.init({
                 'typedescshorter': 'Affiche uniquement le bonus du jour',
                 'displayed': 'Votre Almanax sera affiché: ',
                 'pleaseconfigure': 'Votre serveur n\'a pas été configuré. Utilisez /config Avant de réutiliser cette commande.',
+				'pleasesetchannel': 'Aucun canal n\'a été configuré. Merci de réessayer en ajoutant un #canal pour continuer',
 
                 'monthprotector': 'Protecteur du mois: ',
                 'meridia': 'Méryde',
@@ -103,7 +105,7 @@ async function get_frame_fr(){
     const today = moment().tz('Europe/Paris');
     let json_frame;
     const response = await fetch('https://haapi.ankama.com/json/Ankama/v2/Almanax/GetEvent?lang=fr&date=' + today.format('YYYY-MM-DD'));
-    await response.json().then(body => {
+	await response.json().then(body => {
         json_frame = {
             day: today.date(),
             month: body.month.name,
@@ -169,7 +171,7 @@ async function get_frame_total() {
 function get_wakfu_bonus(){
     let bonus = [];
     const today = moment().tz('Europe/Paris');
-    const compare = moment("20191121").tz('Europe/Paris');
+    const compare = moment("20191121").tz('Europe/Paris').hour(0);
     let difference = today.diff(compare, 'days');
     switch(difference % 5) {
         case 0:
@@ -197,56 +199,77 @@ function get_wakfu_bonus(){
 }
 
 
-async function send_message() {
+async function send_message(client, collection, interaction = undefined) {
     get_frame_total().then((json) => {
         let wakfu_bonus = get_wakfu_bonus();
         let embed;
+		console.log(json);
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild_id: {$eq: guild.id}}, async (err, cursor) => {
-                if (cursor) {
-                    if (cursor && cursor.language) {
-                        if (cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
-                            embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                                .setDescription('BONUS WAKFU\u200b' + wakfu_bonus[0])
-                            if(moment().tz('Europe/Paris').date() === 1) {
-                                embed.addField('\u200b', ' ')
-                                     .addField('Protecteur du mois', json.protector.description_fr)
-                            }
-                            embed.addField('\u200b', ' ')
-                                 .addField('Méryde', json.description_fr)
-                                 .addField('\u200b', ' ')
-                                 .addField('Zodiac du jour', json.zodiac.description_fr)
-                                 .addField('\u200b', ' ')
-                                 .addField('Ephéméride', json.ephemeris_fr)
-                                 .addField('\u200b', ' ')
-                                 .addField('Rubrikabrak', json.rubrikabrax_fr)
-                                 .setImage(json['img'])
-                        } else {
-                            embed = new Discord.MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
-                                .setDescription('BONUS WAKFU\u200b' + wakfu_bonus[0])
+                if (cursor && cursor.language) {
+                    if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
+						setLanguage(interaction, cursor.language);
+                        embed = new MessageEmbed().setTitle(json.day + " " + json.month + " 977")
+                            .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')
+
+                        if(cursor.type && cursor.type === 'long') {
                             if(moment().tz('Europe/Paris').date() === 1) {
                                 embed.addField('\u200b', '\u200b')
-                                    .addField('Month protector', json.protector.description_en)
+                                    .addField(i18next.t('monthprotector'), json.protector.description_fr)
                             }
                             embed.addField('\u200b', '\u200b')
-                                .addField('Merydia', json.description_en)
+                                .addField(i18next.t('meridia'), json.description_fr)
                                 .addField('\u200b', '\u200b')
-                                .addField('Zodiac of the day', json.zodiac.description_en)
+                                .addField(i18next.t('zodiac'), json.zodiac.description_fr)
                                 .addField('\u200b', '\u200b')
-                                .addField('Ephemeris', json.ephemeris_en)
+                                .addField(i18next.t('ephemeris'), json.ephemeris_fr)
                                 .addField('\u200b', '\u200b')
-                                .addField('Rubrikabrax', json.rubrikabrax_en)
-                                .setImage(json['img'])
+                                .addField(i18next.t('rubricabrax'), json.rubrikabrax_fr);
+                        }
+                        if(cursor.type && (cursor.type === 'long' || cursor.type === 'short')){
+                            embed.setImage(json.img)
+                        }
+                    } else {
+						setLanguage(interaction, "en");
+                        embed = new MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
+                            .setDescription('**WAKFU BONUS** \n *' + wakfu_bonus[1] + '*')
+                        if (cursor.type && cursor.type === 'long') {
+                            if (moment().tz('Europe/Paris').date() === 1) {
+                                embed.addField('\u200b', '\u200b')
+                                    .addField(i18next.t('monthprotector'), json.protector.description_en)
+                            }
+                            embed.addField('\u200b', '\u200b')
+                                .addField(i18next.t('meridia'), json.description_en)
+                                .addField('\u200b', '\u200b')
+                                .addField(i18next.t('zodiac'), json.zodiac.description_en)
+                                .addField('\u200b', '\u200b')
+                                .addField(i18next.t('ephemeris'), json.ephemeris_en)
+							if(json.rubrikabrax_en) {
+                                embed.addField('\u200b', '\u200b')
+									 .addField(i18next.t('rubricabrax'), json.rubrikabrax_en)
+							}
+                        }
+                        if (cursor.type && (cursor.type === 'long' || cursor.type === 'short')) {
+                            embed.setImage(json.img)
                         }
                     }
-                    if (client.channels.cache.get(cursor.channel)) {
-                        client.channels.cache.get(cursor.channel).send(embed).catch((error)=>{
-                            console.log(cursor.guild + i18next.t('updatepermissions'));
-                        });
-                    }
+                    if (client.channels) {
+                        let channel = client.channels.cache.get(cursor.channel);
+						if (channel && typeof(channel.send) === 'function') {
+							channel.send({embeds: [embed]}).catch((error)=>{
+								if(interaction) {
+									sendError(interaction, cursor);
+								}
+								//console.log(error)
+							})
+						}
+					}
                 }
             })
         });
+		if(interaction){
+			interaction.editReply(i18next.t('senteveryone'));
+		}
         console.log(i18next.t("senteveryone"))
     })
 }
@@ -282,9 +305,15 @@ function checkCommandUsage(interaction) {
     checkArgs(interaction);
 }
 
-function sendError(interaction) {
+function sendError(interaction, cursor = null) {
     interaction.user.createDM().then(() => {
-        interaction.user.send(message.guild.name + i18next.t('updatepermissions'))
+		if(cursor){
+			interaction.user.send(cursor.guild + i18next.t('updatepermissions'))
+			console.log(cursor.guild + i18next.t('updatepermissions'));
+		} else {
+			interaction.user.send(interaction.guild.name + i18next.t('updatepermissions'))
+			console.log(interaction.guild.name + i18next.t('updatepermissions'));
+		}
     })
     console.log(interaction.guild.name + i18next.t('updatepermissions'));
 }

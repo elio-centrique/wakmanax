@@ -22,12 +22,12 @@ eval(fs.readFileSync('./src/functions.js') + '');
 
 client.once('ready', async() => {
     try {
-        cron.schedule('00 23 * * *', () =>{
+        cron.schedule('00 00 * * *', () =>{
             console.log('sending almanax from cron');
-            send_interaction();
+            send_message(client, collection);
             almanax_sent = true;
         }, {timezone: 'Europe/Paris'})
-        cron.schedule('05 23 * * *', () =>{
+        cron.schedule('05 00 * * *', () =>{
             console.log('reset timer cron')
             almanax_sent = false;
         }, {timezone: 'Europe/Paris'})
@@ -63,7 +63,7 @@ client.on('interactionCreate', async(interaction) => {
         let language = interaction.options.getString('language')
         if(channel === null) {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, async (err, cursor) => {
-                if(cursor.channel) {
+                if(cursor && cursor.channel) {
                     channel = await client.channels.fetch(cursor.channel);
                 } else {
                     channel = "";
@@ -72,7 +72,7 @@ client.on('interactionCreate', async(interaction) => {
         }
         if(language === null) {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, cursor) => {
-                if(cursor.language) {
+                if(cursor && cursor.language) {
                     language = cursor.language.toLowerCase();
                     i18next.language
                 } else {
@@ -80,6 +80,9 @@ client.on('interactionCreate', async(interaction) => {
                 }
             });
         }
+		if(channel === "" || channel === null) {
+			return i18next.t('pleasesetchannel');
+		}
         await i18next.changeLanguage(language);
         try {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, result) => {
@@ -140,9 +143,22 @@ client.on('interactionCreate', async(interaction) => {
         checkPrivilege(interaction);
         if(interaction.user.id === "109752351643955200") {
             console.log("it SHOULD be normal and intended that this line appear. If not, i'm in real trouble.")
-            send_message();
+            send_message(client, collection, interaction);
         } else {
             console.log(interaction.user.username + " from " + interaction.guild.name + " tries to send Almanax.")
+        }
+    }
+    
+    if (commandName === 'stats') {
+        checkCommandUsage(interaction);
+        if(interaction.user.id === "109752351643955200") {
+            let count = 0;
+            client.guilds.cache.forEach(guild => {
+                count++;
+            });
+            interaction.editReply('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
+                sendError(interaction);
+            });
         }
     }
 
@@ -152,7 +168,7 @@ client.on('interactionCreate', async(interaction) => {
             let wakfu_bonus = get_wakfu_bonus();
             let embed;
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, cursor) => {
-                if(cursor.language) {
+                if(cursor && cursor.language) {
                     if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                         embed = new MessageEmbed().setTitle(json.day + " " + json.month + " 977")
                             .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')

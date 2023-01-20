@@ -10,9 +10,6 @@
   "keywords": [],
   "author": "elio-centrique",
   "license": "ISC",
-  "engines": {
-    "node": "^16.9.x"
-  },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
@@ -25,7 +22,6 @@
     "moment-timezone": "^0.5.34",
     "mongodb": "^4.5.0",
     "node-cron": "^3.0.0",
-    "node-fetch": "^3.2.3",
     "node-fetch-npm": "^2.0.4",
     "nodemon": "^2.0.16",
     "request": "^2.88.2"
