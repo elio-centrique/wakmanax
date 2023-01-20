@@ -49,11 +49,6 @@ const commands = [
     
 ].map(command => command.toJSON());
 
-<<<<<<< HEAD
-].map(command => command.toJSON());
-
-=======
->>>>>>> 091254d76aa3a2b3e7d51ec1f746b4fbdb4be5f0
 const private_commands = [
     new SlashCommandBuilder()
         .setName('resend')
@@ -94,10 +89,6 @@ const private_commands = [
         .setDescription('check the bot stats')
         .setDescriptionLocalization('fr', 'donne les statistiques du bot')
         .setDefaultPermission(false)
-<<<<<<< HEAD
-=======
-    
->>>>>>> 091254d76aa3a2b3e7d51ec1f746b4fbdb4be5f0
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
@@ -128,10 +119,6 @@ rest.get(Routes.applicationCommands(process.env.clientId)).then(data => {
 
 
 
-
-<<<<<<< HEAD
-
-=======
 rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
     .then(() => console.log('Successfully registered application commands.'))
     .catch(console.error);
@@ -140,4 +127,3 @@ rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
 rest.put(Routes.applicationGuildCommands(process.env.clientId, process.env.guildId), { body: private_commands })
     .then(() => console.log('Successfully registered guild commands.'))
     .catch(console.error);
->>>>>>> 091254d76aa3a2b3e7d51ec1f746b4fbdb4be5f0
