@@ -145,6 +145,22 @@ client.on('interactionCreate', async(interaction) => {
             console.log(interaction.user.username + " from " + interaction.guild.name + " tries to send Almanax.")
         }
     }
+    
+    if (commandName === 'stats') {
+        checkCommandUsage(interaction);
+        if(interaction.user.id === "109752351643955200") {
+            let count = 0;
+            client.guilds.cache.forEach(guild => {
+                count++;
+            });
+            message.channel.send('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
+                message.author.createDM().then(() => {
+                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
+                })
+                console.log(message.guild.name + ": Please update the Bot Permissions.");
+            });
+        }
+    }
 
     if (commandName === 'send') {
         checkArgs(interaction);
