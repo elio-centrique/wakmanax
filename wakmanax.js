@@ -169,7 +169,6 @@ client.on('interactionCreate', async(interaction) => {
                     if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
                         embed = new EmbedBuilder().setTitle(json.day + " " + json.month + " 977")
                             .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')
-
                         if (cursor.type && cursor.type === 'long') {
                             if (moment().tz('Europe/Paris').date() === 1) {
                                 embed.addFields(
@@ -229,7 +228,6 @@ client.on('interactionCreate', async(interaction) => {
                         embed = new EmbedBuilder().setTitle(json['day'] + " " + json['month'] + " 977")
                             .setDescription('**WAKFU BONUS** \n *' + wakfu_bonus[1] + '*')
                         if (cursor.type && cursor.type === 'long') {
-                            iif (cursor.type && cursor.type === 'long') {
                             if (moment().tz('Europe/Paris').date() === 1) {
                                 embed.addFields(
 										{
