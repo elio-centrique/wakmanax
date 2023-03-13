@@ -250,7 +250,7 @@ async function send_message(client, collection, interaction = undefined) {
 									value: json.ephemeris_fr
 								}
 							)
-							if(json.rubrikabrax_fr {
+							if(json.rubrikabrax_fr) {
                                 embed.addFields(
 									{
 										name: '\u200b', 
