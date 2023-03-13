@@ -19,7 +19,7 @@
     "fs": "^0.0.1-security",
     "i18next": "^21.6.16",
     "moment": "^2.29.3",
-    "moment-timezone": "^0.5.34",
+    "moment-timezone": "^0.5.35",
     "mongodb": "^4.5.0",
     "node-cron": "^3.0.0",
     "node-fetch-npm": "^2.0.4",
