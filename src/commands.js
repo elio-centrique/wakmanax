@@ -45,8 +45,8 @@ const commands = [
         .setName('type')
         .setNameLocalization('fr','type')
         .setDescriptionLocalization('fr', 'Changer la taille du message de l\'almanax')
-        .setDescription('Change how the bot displays the Almanax')
-    
+        .setDescription('Change how the bot displays the Almanax'),
+
 ].map(command => command.toJSON());
 
 const private_commands = [
@@ -82,12 +82,6 @@ const private_commands = [
                 .setDescriptionLocalization('fr', 'le message à envoyer')
                 .setDescription('The message to send')
                 .setRequired(true))
-        .setDefaultPermission(false),
-    
-    new SlashCommandBuilder()
-        .setName('stats')
-        .setDescription('check the bot stats')
-        .setDescriptionLocalization('fr', 'donne les statistiques du bot')
         .setDefaultPermission(false)
 ].map(command => command.toJSON());
 
@@ -119,11 +113,5 @@ rest.get(Routes.applicationCommands(process.env.clientId)).then(data => {
 
 
 
-rest.put(Routes.applicationCommands(process.env.clientId), { body: commands })
-    .then(() => console.log('Successfully registered application commands.'))
-    .catch(console.error);
 
 
-rest.put(Routes.applicationGuildCommands(process.env.clientId, process.env.guildId), { body: private_commands })
-    .then(() => console.log('Successfully registered guild commands.'))
-    .catch(console.error);

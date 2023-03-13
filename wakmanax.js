@@ -1,11 +1,11 @@
 const dotenv = require("dotenv")
 dotenv.config();
-const { MessageEmbed, Client, Intents, Collection, Interaction, Permissions, MessageActionRow, MessageSelectMenu} = require('discord.js');
+const { EmbedBuilder, Client, GatewayIntentBits, Collection, Interaction, Permissions, MessageActionRow, MessageSelectMenu} = require('discord.js');
 const i18next = require('i18next');
 const cron = require('node-cron');
 const moment = require('moment-timezone');
 const fs = require("fs");
-const client = new Client({intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({intents: [GatewayIntentBits.Guilds] });
 const {MongoClient, ServerApiVersion} = require('mongodb');
 const {locale} = require("moment/moment");
 
@@ -74,7 +74,7 @@ client.on('interactionCreate', async(interaction) => {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, cursor) => {
                 if(cursor && cursor.language) {
                     language = cursor.language.toLowerCase();
-                    i18next.language
+                    //i18next.changeLanguage(language)
                 } else {
                     language = "en";
                 }
@@ -100,6 +100,7 @@ client.on('interactionCreate', async(interaction) => {
                     } else {
                         interaction.editReply(i18next.t('updatedlanguage') + language).catch((error)=>{
                             sendError(interaction)
+							console.log("KO");
                         });
                     }
                 } else {
@@ -156,11 +157,8 @@ client.on('interactionCreate', async(interaction) => {
             client.guilds.cache.forEach(guild => {
                 count++;
             });
-            message.channel.send('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
-                message.author.createDM().then(() => {
-                    message.author.send(message.guild.name + ": Please update the Bot Permissions.")
-                })
-                console.log(message.guild.name + ": Please update the Bot Permissions.");
+            interaction.editReply('Il y a ' + count + ' serveurs qui m\'utilisent... Incroyable').catch((error)=>{
+                sendError(interaction);
             });
         }
     }
@@ -173,49 +171,49 @@ client.on('interactionCreate', async(interaction) => {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, cursor) => {
                 if(cursor && cursor.language) {
                     if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
-                        embed = new MessageEmbed().setTitle(json.day + " " + json.month + " 977")
+                        embed = new EmbedBuilder().setTitle(json.day + " " + json.month + " 977")
                             .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')
 
                         if(cursor.type && cursor.type === 'long') {
                             if(moment().tz('Europe/Paris').date() === 1) {
-                                embed.addField('\u200b', '\u200b')
-                                    .addField(i18next.t('monthprotector'), json.protector.description_fr)
+                                embed.addFields('\u200b', '\u200b')
+                                    .addFields(i18next.t('monthprotector'), json.protector.description_fr)
                             }
-                            embed.addField('\u200b', '\u200b')
-                                .addField(i18next.t('meridia'), json.description_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('zodiac'), json.zodiac.description_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('ephemeris'), json.ephemeris_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('rubricabrax'), json.rubrikabrax_fr);
+                            embed.addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('meridia'), json.description_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('zodiac'), json.zodiac.description_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('ephemeris'), json.ephemeris_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('rubricabrax'), json.rubrikabrax_fr);
                         }
                         if(cursor.type && (cursor.type === 'long' || cursor.type === 'short')){
                             embed.setImage(json.img)
                         }
                     } else {
-                        embed = new MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
+                        embed = new EmbedBuilder().setTitle(json['day'] + " " + json['month'] + " 977")
                             .setDescription('**WAKFU BONUS** \n *' + wakfu_bonus[1] + '*')
                         if (cursor.type && cursor.type === 'long') {
                             if (moment().tz('Europe/Paris').date() === 1) {
-                                embed.addField('\u200b', '\u200b')
-                                    .addField(i18next.t('monthprotector'), json.protector.description_en)
+                                embed.addFields('\u200b', '\u200b')
+                                    .addFields(i18next.t('monthprotector'), json.protector.description_en)
                             }
-                            embed.addField('\u200b', '\u200b')
-                                .addField(i18next.t('meridia'), json.description_en)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('zodiac'), json.zodiac.description_en)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('ephemeris'), json.ephemeris_en)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('rubricabrax'), json.rubrikabrax_en)
+                            embed.addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('meridia'), json.description_en)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('zodiac'), json.zodiac.description_en)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('ephemeris'), json.ephemeris_en)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('rubricabrax'), json.rubrikabrax_en)
                         }
                         if (cursor.type && (cursor.type === 'long' || cursor.type === 'short')) {
                             embed.setImage(json.img)
                         }
                     }
                 }
-                if (cursor && client.channels.cache.get(cursor.channel)) {
+                if (client.channels.cache.get(cursor.channel)) {
                     client.channels.cache.get(cursor.channel).send({embeds: [embed]}).catch((error)=>{
                         sendError(interaction)
                     });
@@ -299,17 +297,17 @@ client.on('interactionCreate', async(interaction) => {
     }
     /*
     if (commandName === 'help') {
-        let embed = new MessageEmbed()
+        let embed = new EmbedBuilder()
             .setTitle('Help menu:');
         (await client.guilds.cache.get(process.env.guildId)?.commands.fetch()).forEach(command => {
             /* if(command.perm)
-            embed.addField(command.name, )
+            embed.addFields(command.name, )
         })
     } */
 });
 
 client.on('interactionCreate', async(interaction) => {
-    if (!interaction.isSelectMenu()) return;
+    if (!interaction.isStringSelectMenu()) return;
     if(interaction.customId === 'typeAlma'){
         try {
             collection.findOne({guild_id: {$eq: interaction.guild.id}}, (err, result) => {

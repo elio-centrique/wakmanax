@@ -1,4 +1,4 @@
-const {Permissions, MessageEmbed} = require("discord.js");
+const {Permissions, EmbedBuilder} = require("discord.js");
 const i18next = require("i18next");
 const moment = require('moment-timezone');
 const fetch = require('node-fetch-npm');
@@ -160,11 +160,11 @@ async function get_frame_en() {
 async function get_frame_total() {
     let json_total = await get_frame_fr();
     let tmp_json = await get_frame_en();
-    json_total.description_en = tmp_json.description_en;
-    json_total.zodiac.description_en = tmp_json.zodiac.description_en;
+    json_total.description_en = tmp_json.description_en !== '' ? tmp_json.description_en : 'No description available today';
+    json_total.zodiac.description_en = tmp_json.zodiac.description_en !== '' ? tmp_json.zodiac.description_en : 'No zodiac available today';
     json_total.protector.description_en = tmp_json.protector.description_en;
-    json_total.ephemeris_en = tmp_json.ephemeris_en;
-    json_total.rubrikabrax_en = tmp_json.rubrikabrax_en;
+    json_total.ephemeris_en = tmp_json.ephemeris_en !== '' ? tmp_json.ephemeris_en : 'No ephemeris available today';
+    json_total.rubrikabrax_en = tmp_json.rubrikabrax_en !== '' ? tmp_json.rubrikabrax_en : 'No Rubrikabrax available today';
     return json_total;
 }
 
@@ -199,54 +199,54 @@ function get_wakfu_bonus(){
 }
 
 
-
 async function send_message(client, collection, interaction = undefined) {
     get_frame_total().then((json) => {
         let wakfu_bonus = get_wakfu_bonus();
         let embed;
+		console.log(json);
         client.guilds.cache.forEach(guild => {
             collection.findOne({guild_id: {$eq: guild.id}}, async (err, cursor) => {
                 if (cursor && cursor.language) {
                     if(cursor.language.toLowerCase() === 'fr' || cursor.language.toLowerCase() === 'français' || cursor.language.toLowerCase() === 'french') {
 						setLanguage(interaction, cursor.language);
-                        embed = new MessageEmbed().setTitle(json.day + " " + json.month + " 977")
+                        embed = new EmbedBuilder().setTitle(json.day + " " + json.month + " 977")
                             .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')
 
                         if(cursor.type && cursor.type === 'long') {
                             if(moment().tz('Europe/Paris').date() === 1) {
-                                embed.addField('\u200b', '\u200b')
-                                    .addField(i18next.t('monthprotector'), json.protector.description_fr)
+                                embed.addFields('\u200b', '\u200b')
+                                    .addFields(i18next.t('monthprotector'), json.protector.description_fr)
                             }
-                            embed.addField('\u200b', '\u200b')
-                                .addField(i18next.t('meridia'), json.description_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('zodiac'), json.zodiac.description_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('ephemeris'), json.ephemeris_fr)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('rubricabrax'), json.rubrikabrax_fr);
+                            embed.addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('meridia'), json.description_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('zodiac'), json.zodiac.description_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('ephemeris'), json.ephemeris_fr)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('rubricabrax'), json.rubrikabrax_fr);
                         }
                         if(cursor.type && (cursor.type === 'long' || cursor.type === 'short')){
                             embed.setImage(json.img)
                         }
                     } else {
 						setLanguage(interaction, "en");
-                        embed = new MessageEmbed().setTitle(json['day'] + " " + json['month'] + " 977")
+                        embed = new EmbedBuilder().setTitle(json['day'] + " " + json['month'] + " 977")
                             .setDescription('**WAKFU BONUS** \n *' + wakfu_bonus[1] + '*')
                         if (cursor.type && cursor.type === 'long') {
                             if (moment().tz('Europe/Paris').date() === 1) {
-                                embed.addField('\u200b', '\u200b')
-                                    .addField(i18next.t('monthprotector'), json.protector.description_en)
+                                embed.addFields('\u200b', '\u200b')
+                                    .addFields(i18next.t('monthprotector'), json.protector.description_en)
                             }
-                            embed.addField('\u200b', '\u200b')
-                                .addField(i18next.t('meridia'), json.description_en)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('zodiac'), json.zodiac.description_en)
-                                .addField('\u200b', '\u200b')
-                                .addField(i18next.t('ephemeris'), json.ephemeris_en)
+                            embed.addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('meridia'), json.description_en)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('zodiac'), json.zodiac.description_en)
+                                .addFields('\u200b', '\u200b')
+                                .addFields(i18next.t('ephemeris'), json.ephemeris_en)
 							if(json.rubrikabrax_en) {
-                                embed.addField('\u200b', '\u200b')
-									 .addField(i18next.t('rubricabrax'), json.rubrikabrax_en)
+                                embed.addFields('\u200b', '\u200b')
+									 .addFields(i18next.t('rubricabrax'), json.rubrikabrax_en)
 							}
                         }
                         if (cursor.type && (cursor.type === 'long' || cursor.type === 'short')) {
