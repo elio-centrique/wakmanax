@@ -13,10 +13,6 @@ let collection = null;
 const uri = "mongodb+srv://" + process.env['db_user'] + ":" +  process.env['db_pass'] + "@" +  process.env['db_name'] + "-l6ey6.gcp.mongodb.net/" + process.env['db_name'] + "?retryWrites=true&w=majority";
 const mongo_client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 let almanax_sent = false;
-/*let cheerio = require ('cheerio');
-const axios = require('axios').default;
-*/
-
 eval(fs.readFileSync('./src/functions.js') + '');
 
 
@@ -174,19 +170,57 @@ client.on('interactionCreate', async(interaction) => {
                         embed = new EmbedBuilder().setTitle(json.day + " " + json.month + " 977")
                             .setDescription('**BONUS WAKFU** \n *' + wakfu_bonus[0] + '*')
 
-                        if(cursor.type && cursor.type === 'long') {
-                            if(moment().tz('Europe/Paris').date() === 1) {
-                                embed.addFields('\u200b', '\u200b')
-                                    .addFields(i18next.t('monthprotector'), json.protector.description_fr)
+                        if (cursor.type && cursor.type === 'long') {
+                            if (moment().tz('Europe/Paris').date() === 1) {
+                                embed.addFields(
+									{
+										name: '\u200b', 
+										value: '\u200b'
+									},
+									{
+										name: i18next.t('monthprotector'), 
+										value: json.protector.description_fr
+									}
+								)
                             }
-                            embed.addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('meridia'), json.description_fr)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('zodiac'), json.zodiac.description_fr)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('ephemeris'), json.ephemeris_fr)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('rubricabrax'), json.rubrikabrax_fr);
+                            embed.addFields(
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								}, 
+								{
+									name: i18next.t('meridia'), 
+									value: json.description_fr
+								},
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								},
+								{
+									name: i18next.t('zodiac'), 
+									value: json.zodiac.description_fr
+								},
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								},
+								{
+									name: i18next.t('ephemeris'), 
+									value: json.ephemeris_fr
+								}
+							)
+							if(json.rubrikabrax_fr) {
+                                embed.addFields(
+									{
+										name: '\u200b', 
+										value: '\u200b'
+									},
+									{
+										name: i18next.t('rubricabrax'), 
+										value: json.rubrikabrax_fr
+									}
+								)
+							}
                         }
                         if(cursor.type && (cursor.type === 'long' || cursor.type === 'short')){
                             embed.setImage(json.img)
@@ -195,18 +229,57 @@ client.on('interactionCreate', async(interaction) => {
                         embed = new EmbedBuilder().setTitle(json['day'] + " " + json['month'] + " 977")
                             .setDescription('**WAKFU BONUS** \n *' + wakfu_bonus[1] + '*')
                         if (cursor.type && cursor.type === 'long') {
+                            iif (cursor.type && cursor.type === 'long') {
                             if (moment().tz('Europe/Paris').date() === 1) {
-                                embed.addFields('\u200b', '\u200b')
-                                    .addFields(i18next.t('monthprotector'), json.protector.description_en)
+                                embed.addFields(
+										{
+											name: '\u200b', 
+											value: '\u200b'
+										},
+										{
+											name: i18next.t('monthprotector'), 
+											value: json.protector.description_en
+										}
+									)
                             }
-                            embed.addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('meridia'), json.description_en)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('zodiac'), json.zodiac.description_en)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('ephemeris'), json.ephemeris_en)
-                                .addFields('\u200b', '\u200b')
-                                .addFields(i18next.t('rubricabrax'), json.rubrikabrax_en)
+                            embed.addFields(
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								}, 
+								{
+									name: i18next.t('meridia'), 
+									value: json.description_en
+								},
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								},
+								{
+									name: i18next.t('zodiac'), 
+									value: json.zodiac.description_en
+								},
+								{
+									name: '\u200b', 
+									value: '\u200b'
+								},
+								{
+									name: i18next.t('ephemeris'), 
+									value: json.ephemeris_en
+								}
+							)
+							if(json.rubrikabrax_en) {
+                                embed.addFields(
+									{
+										name: '\u200b', 
+										value: '\u200b'
+									},
+									{
+										name: i18next.t('rubricabrax'), 
+										value: json.rubrikabrax_en
+									}
+								)
+							}
                         }
                         if (cursor.type && (cursor.type === 'long' || cursor.type === 'short')) {
                             embed.setImage(json.img)
