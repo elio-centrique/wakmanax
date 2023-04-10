@@ -4,13 +4,13 @@ Wakmanax is a Discord bot created with the Almanax API data provided by a fan.
 
 Wakmanax was developed to give the lore, the meryde and the daily bonus of the Wakfu almanax.
 
-## __How to use it__
+## How to use it
 
-__First of all, you need to be an administrator of a server to invite the bot. If you are, congratulation, you can click on this link to invite the bot:
+First of all, you need to be an administrator of a server to invite the bot. If you are, congratulation, you can click on this link to invite the bot:
 
 https://discordapp.com/oauth2/authorize?client_id=665325374388830210&scope=bot&permissions=93184
 
-This bot need read, write and add links permissions.__
+This bot need read, write and add links permissions.
 
 ## And then?
 
