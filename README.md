@@ -1,3 +1,6 @@
+# This project is discontinued since almanax bonuses were removed in the 1.79 update.
+# However, this repo can still be usefull for you if you need some ideas for time based info sending.
+
 # Wakmanax
 
 Wakmanax is a Discord bot created with the Almanax API data provided by a fan.
